@@ -23,17 +23,21 @@ type TLink = {
 };
 
 interface Props extends BreadcrumbsProps {
-  links: TLink[];
+  links?: TLink[];
   activeLast?: boolean;
   onDark?: boolean;
 }
 
 export default function Breadcrumbs({
-  links,
+  links = [],
   activeLast = false,
   onDark = false,
   ...other
 }: Props) {
+  if (!links.length) {
+    return null;
+  }
+
   const currentLink = links[links.length - 1].name;
 
   const listDefault = links.map((link) => <LinkItem key={link.name} link={link} onDark={onDark} />);

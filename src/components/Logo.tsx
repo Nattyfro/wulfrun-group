@@ -5,6 +5,8 @@ import NextLink from 'next/link';
 import { useTheme } from '@mui/material/styles';
 import { BoxProps } from '@mui/material';
 import { useResponsive } from '../hooks';
+import { Image } from '../../src/components';
+
 import logo from 'src/assets/wulfrun-logo.svg';
 
 // ----------------------------------------------------------------------
@@ -42,7 +44,11 @@ function Logo({ onDark = false, isSimple = false, sx }: LogoProps) {
           <path fill={isLight && !onDark ? DARK_COLOR : LIGHT_COLOR} id="Path_368" data-name="Path 368" d="M465.764,38.859v1H474.6a11.105,11.105,0,0,1-.817,3.7,10.12,10.12,0,0,1-1.985,3.084,9.126,9.126,0,0,1-3,2.118,9.462,9.462,0,0,1-3.868.767,10.191,10.191,0,0,1-5.318-1.4,9.872,9.872,0,0,1-3.684-3.867,11.586,11.586,0,0,1-1.335-5.6,11.427,11.427,0,0,1,1.351-5.635,10.045,10.045,0,0,1,8.985-5.234,9.959,9.959,0,0,1,5.185,1.318,9.613,9.613,0,0,1,3.418,3.317l.8-.666a11.536,11.536,0,0,0-2.368-2.65,10.839,10.839,0,0,0-3.117-1.768,11.188,11.188,0,0,0-3.918-.65,11.581,11.581,0,0,0-4.534.884,10.8,10.8,0,0,0-3.65,2.5,11.636,11.636,0,0,0-2.418,3.8,13.641,13.641,0,0,0,0,9.569,11.616,11.616,0,0,0,2.418,3.8,10.77,10.77,0,0,0,3.65,2.5,11.581,11.581,0,0,0,4.534.884,10.444,10.444,0,0,0,4.535-.951,10.053,10.053,0,0,0,3.4-2.6,11.9,11.9,0,0,0,2.151-3.768,13.238,13.238,0,0,0,.75-4.451Z" transform="translate(-155.766 -9.168)" />
           <rect id="Rectangle_361" data-name="Rectangle 361" width="320" height="54.641" fill="none" />
         </svg>
-{/* right here */}
+        {/* right here */}
+        <Image
+          alt="login"
+          src="https://zone-assets-api.vercel.app/assets/illustrations/illustration_login.svg"
+        />
       </>
     </NextLink>
   );
