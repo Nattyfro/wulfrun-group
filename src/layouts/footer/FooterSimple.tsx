@@ -10,7 +10,7 @@ export default function FooterSimple() {
     <Container sx={{ textAlign: 'center', py: 8 }}>
       <Logo isSimple sx={{ mb: 3 }} />
       <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-        © 2023. All rights reserved || Company no: 04526466
+        © 2026. All rights reserved || Company no: 04526466
       </Typography>
     </Container>
   );

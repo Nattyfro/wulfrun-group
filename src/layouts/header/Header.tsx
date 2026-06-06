@@ -55,7 +55,7 @@ export default function Header({ transparent }: Props) {
                   ...(isScrolling && { color: 'text.primary' }),
                 }}
               >
-                <b>01902 567278</b>
+                <b>+44 7966 031331</b>
               </Typography>
             ) : (
               <Button

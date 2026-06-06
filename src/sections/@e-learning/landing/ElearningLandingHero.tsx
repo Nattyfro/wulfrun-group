@@ -60,8 +60,8 @@ export default function ElearningLandingHero() {
             transform: 'scaleX(-1)',
           }}
           alt="hero"
-          src="https://youngroofingltd.com/assets/Sambourne/17.jpg"
-          // src='https://kpyoungroofing.vercel.app/assets/CherryHill/9.jpg'  // 3 4 5 6 9
+          // src="https://youngroofingltd.com/assets/Sambourne/17.jpg"
+          src='https://youngroofingltd.com/assets/CherryHill/9.jpg'  // 3 4 5 6 9
           // src='https://kpyoungroofing.vercel.app/assets/Sambourne/5.jpg' 10,7,4,5,18,17,29
         />
       </Box>
@@ -98,7 +98,7 @@ function Content() {
         color: 'common.white',
       }}
     >
-      <Typography variant="h2">Premium Roofing Guaranteed bruh</Typography>
+      <Typography variant="h2">Premium Roofing Guaranteed</Typography>
       <Typography sx={{ color: 'grey.300', mt: 3, mb: 5 }}>
         We boast an extensive array of skills, knowledge and experience that enables us to
         successfully manage any roofing project. We take great pride in our reputation for

@@ -17,7 +17,7 @@ import { CareerContactInfo, CareerContactForm } from '../../src/sections/@career
 //
 const ContactMap = dynamic(() => import('../../src/components/map/ContactMap'));
 
-// ----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: HEADER_MOBILE_HEIGHT,

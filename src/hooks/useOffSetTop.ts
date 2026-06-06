@@ -7,15 +7,15 @@ export default function useOffSetTop(top?: number) {
   const isTop = top || 100;
 
   useEffect(() => {
-    window.onscroll = () => {
-      if (window.pageYOffset > isTop) {
-        setOffSetTop(true);
-      } else {
-        setOffSetTop(false);
-      }
+    const handleScroll = () => {
+      setOffSetTop(window.pageYOffset > isTop);
     };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     return () => {
-      window.onscroll = null;
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [isTop]);
 

@@ -19,19 +19,20 @@ export const ToolbarStyle = styled(Toolbar, {
   height: HEADER_MOBILE_HEIGHT,
   color: theme.palette.text.primary,
   backgroundColor: theme.palette.background.default,
-  transition: theme.transitions.create(['height', 'background-color'], {
+  transition: theme.transitions.create(['height', 'background-color', 'backdrop-filter', '-webkit-backdrop-filter'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.short,
   }),
   [theme.breakpoints.up('md')]: {
     height: HEADER_DESKTOP_HEIGHT,
   },
-  ...(transparent && {
+  ...(transparent && !scrolling && {
     color: theme.palette.common.white,
     backgroundColor: 'transparent',
   }),
   ...(scrolling && {
     ...cssStyles(theme).bgBlur(),
+    color: theme.palette.text.primary,
     [theme.breakpoints.up('md')]: {
       height: HEADER_DESKTOP_HEIGHT - 20,
     },

@@ -1,13 +1,13 @@
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import { Grid, Stack, TextField, Container, Typography } from '@mui/material';
+import { Alert, Grid, Stack, TextField, Container, Typography } from '@mui/material';
 // components
 import { Image } from '../../../components';
-import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -34,12 +34,10 @@ type FormValuesProps = {
   message: string;
 };
 
-const requestOptions = {
-  action:"https://formsubmit.co/myleslewisyoung@gmail.com",
-  method:"POST"
-};
-
 export default function ElearningContactForm() {
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const {
     reset,
     control,
@@ -57,23 +55,29 @@ export default function ElearningContactForm() {
   });
 
   const onSubmit = async (data: FormValuesProps) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // alert(JSON.stringify(data, null, 2));
- 
-    const response = await fetch('https://formsubmit.io/send/a94ccae7-be6b-4f03-b342-8759974fa02b', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (response.ok) {
-      console.log('Email sent successfully');
-      // Reset the form fields here if needed
-    } else {
-      console.error('Failed to send email');
-      // Handle the error condition here
+    setSubmitStatus(null);
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/contact/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to send email');
+      }
+
+      reset();
+      setSubmitStatus('success');
+    } catch (error) {
+      setSubmitStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to send email');
     }
   };
 
@@ -111,10 +115,19 @@ export default function ElearningContactForm() {
               </Typography>
             </Stack>
 
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            <form onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={2.5} alignItems="flex-start">
+                {submitStatus === 'success' && (
+                  <Alert severity="success" sx={{ width: 1 }}>
+                    Message sent. We&apos;ll get back to you soon.
+                  </Alert>
+                )}
+
+                {submitStatus === 'error' && (
+                  <Alert severity="error" sx={{ width: 1 }}>
+                    {errorMessage || 'Something went wrong. Please try again.'}
+                  </Alert>
+                )}
                 <Controller
                   name="fullName"
                   control={control}
@@ -179,12 +192,20 @@ export default function ElearningContactForm() {
                   type="submit"
                   variant="contained"
                   loading={isSubmitting}
-                  color='error'
+                  disableElevation
                   sx={{
                     mx: { xs: 'auto !important', md: 'unset !important' },
+                    px: 4,
+                    bgcolor: 'grey.900',
+                    color: 'common.white',
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    '&:hover': {
+                      bgcolor: 'grey.800',
+                    },
                   }}
                 >
-                  Unavaiable
+                  Send
                 </LoadingButton>
               </Stack>
             </form>
