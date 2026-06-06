@@ -42,7 +42,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const data = await response.json();
+    const raw = await response.text();
+    let data: { success?: unknown; message?: string } = {};
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      return res.status(502).json({ message: 'Unexpected response from email service' });
+    }
 
     if (!isFormSubmitSuccess(data.success)) {
       return res.status(400).json({
