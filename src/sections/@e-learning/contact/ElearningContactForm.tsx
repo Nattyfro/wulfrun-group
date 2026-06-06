@@ -34,11 +34,8 @@ type FormValuesProps = {
   message: string;
 };
 
-const CONTACT_EMAIL = 'myleslewisyoung@gmail.com';
-
-function isFormSubmitSuccess(success: unknown) {
-  return success === true || success === 'true';
-}
+// Public key from Web3Forms — safe to use in the browser.
+const WEB3FORMS_ACCESS_KEY = '66d18c61-b34f-4ee3-ba66-7a3fbc82d2b2';
 
 export default function ElearningContactForm() {
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
@@ -65,27 +62,24 @@ export default function ElearningContactForm() {
     setErrorMessage('');
 
     try {
-      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
         body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
           name: data.fullName,
           email: data.email,
-          _replyto: data.email,
-          subject: data.subject,
+          subject: `Wulfrun Contact: ${data.subject}`,
           message: data.message,
-          _subject: `Wulfrun Contact: ${data.subject}`,
-          _template: 'table',
-          _captcha: 'false',
         }),
       });
 
       const result = await response.json();
 
-      if (!isFormSubmitSuccess(result.success)) {
+      if (!result.success) {
         throw new Error(result.message || 'Failed to send email');
       }
 
