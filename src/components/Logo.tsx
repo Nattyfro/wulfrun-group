@@ -3,7 +3,7 @@ import { memo } from 'react';
 import NextLink from 'next/link';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { BoxProps, Container, Typography } from '@mui/material';
+import { BoxProps, Link } from '@mui/material';
 import { useResponsive } from '../hooks';
 import WulfrunLogo from './WulfrunLogo';
 
@@ -26,9 +26,16 @@ function Logo({ onDark = false, isSimple = false, sx }: LogoProps) {
 
   return (
     <NextLink href="/" passHref>
-      <>
+      <Link
+        underline="none"
+        sx={{
+          display: 'inline-flex',
+          lineHeight: 0,
+          ...sx,
+        }}
+      >
         <WulfrunLogo width={!isMobile ? 240 : 160} color={onDark ? LIGHT_COLOR : DARK_COLOR} />
-      </>
+      </Link>
     </NextLink>
   );
 }

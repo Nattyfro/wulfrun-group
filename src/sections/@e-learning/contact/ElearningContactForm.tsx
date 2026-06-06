@@ -6,9 +6,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import { Alert, Grid, Stack, TextField, Container, Typography } from '@mui/material';
-// components
-import { Image } from '../../../components';
-
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -17,6 +14,23 @@ const RootStyle = styled('div')(({ theme }) => ({
     padding: theme.spacing(15, 0),
   },
 }));
+
+const brushFadeMask = 'url(/assets/masks/brush-fade-mask.svg)';
+
+const BrushContactImage = styled('img')({
+  display: 'block',
+  width: '100%',
+  aspectRatio: '3 / 4',
+  objectFit: 'cover',
+  WebkitMaskImage: brushFadeMask,
+  maskImage: brushFadeMask,
+  WebkitMaskSize: '100% 100%',
+  maskSize: '100% 100%',
+  WebkitMaskRepeat: 'no-repeat',
+  maskRepeat: 'no-repeat',
+  WebkitMaskPosition: 'center',
+  maskPosition: 'center',
+});
 
 // ----------------------------------------------------------------------
 
@@ -94,24 +108,24 @@ export default function ElearningContactForm() {
   return (
     <RootStyle>
       <Container>
-        <Grid container spacing={3} justifyContent="space-between">
+        <Grid container spacing={4} alignItems="center">
           <Grid
             item
             xs={12}
-            md={6}
-            lg={5}
+            md={7}
+            lg={7}
             sx={{
               display: { xs: 'none', md: 'block' },
             }}
           >
-            <Image
-              alt="contact"
-              src="https://zone-assets-api.vercel.app/assets/illustrations/illustration_courses_contact.svg"
-              sx={{ maxWidth: 260 }}
+            <BrushContactImage
+              src="/assets/Contact-us.png"
+              alt="Contact Wulfrun Group"
+              loading="eager"
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={6}>
+          <Grid item xs={12} md={5} lg={5}>
             <Stack
               spacing={2}
               sx={{
