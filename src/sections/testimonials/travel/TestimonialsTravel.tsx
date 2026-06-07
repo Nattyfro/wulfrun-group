@@ -13,13 +13,20 @@ import cssStyles from '../../../utils/cssStyles';
 
 // ----------------------------------------------------------------------
 
+const TESTIMONIAL_BG =
+  'https://youngroofingltd.com/assets/Sambourne/5.jpg';
+
 const RootStyle = styled('div')(({ theme }) => ({
   overflow: 'hidden',
   padding: theme.spacing(10, 0),
-  ...cssStyles(theme).bgImage(),
+  ...cssStyles(theme).bgImage({
+    url: TESTIMONIAL_BG,
+    startColor: alpha(theme.palette.grey[900], 0.9),
+    endColor: alpha(theme.palette.grey[900], 0.78),
+  }),
   [theme.breakpoints.up('md')]: {
     position: 'relative',
-    padding: theme.spacing(15, 0),
+    padding: theme.spacing(14, 0),
   },
 }));
 
@@ -69,11 +76,22 @@ export default function TestimonialsTravel({ testimonials }: Props) {
     <RootStyle>
       <Container>
         <Grid container spacing={3} alignItems="center">
-          <Grid item xs={12} md={6} color="#fff">
+          <Grid item xs={12} md={6}>
+            <Typography
+              variant="overline"
+              sx={{
+                color: 'primary.light',
+                fontWeight: 700,
+                textAlign: { xs: 'center', md: 'left' },
+              }}
+            >
+              Testimonials
+            </Typography>
             <Typography
               variant="h2"
               sx={{
-                color: 'primary.main',
+                color: 'common.white',
+                mt: 2,
                 mb: 5,
                 textAlign: { xs: 'center', md: 'left' },
               }}
@@ -97,9 +115,18 @@ export default function TestimonialsTravel({ testimonials }: Props) {
             }}
           >
             <Image
-              alt="travel testimonial"
-              src="https://zone-assets-api.vercel.app/assets/images/travel/travel_testimonial.png"
-              sx={{ maxWidth: 296, ml: 'auto' }}
+              alt="Completed roofing project"
+              src="https://youngroofingltd.com/assets/Images/Hero4.jpg"
+              ratio="3/4"
+              disabledEffect
+              visibleByDefault
+              sx={{
+                maxWidth: 360,
+                ml: 'auto',
+                borderRadius: 3,
+                overflow: 'hidden',
+                boxShadow: (theme) => `0 24px 48px ${alpha(theme.palette.common.black, 0.35)}`,
+              }}
             />
           </Grid>
         </Grid>
@@ -134,7 +161,7 @@ function TestimonialItem({ testimonial }: TestimonialItemProps) {
     >
       <Iconify
         icon={quotesIcon}
-        sx={{ width: 48, height: 48, opacity: 0.48, color: 'primary.main' }}
+        sx={{ width: 48, height: 48, opacity: 0.72, color: 'primary.light' }}
       />
       <Typography
         sx={{
@@ -142,14 +169,17 @@ function TestimonialItem({ testimonial }: TestimonialItemProps) {
           mb: 5,
           lineHeight: 1.75,
           fontSize: { md: 20 },
+          color: 'grey.100',
         }}
       >
         {review}
       </Typography>
 
       <Stack spacing={1.5} alignItems="center" direction="row">
-        <Box sx={{ width: 8, height: 9, bgcolor: 'primary.main', borderRadius: '50%' }} />
-        <Typography variant="h6">{name}</Typography>
+        <Box sx={{ width: 8, height: 8, bgcolor: 'primary.light', borderRadius: '50%' }} />
+        <Typography variant="h6" sx={{ color: 'common.white' }}>
+          {name}
+        </Typography>
       </Stack>
     </Stack>
   );

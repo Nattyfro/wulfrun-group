@@ -1,11 +1,10 @@
 import Slider from 'react-slick';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
-import { Typography, Stack, Container } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { Typography, Stack, Container, Box } from '@mui/material';
 // @types
 import { BrandProps } from '../../../@types/brand';
-// components
-import { SvgIconStyle } from '../../../components';
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +26,7 @@ export default function CustomerElearning({ brands }: Props) {
 
   const carouselSettings = {
     arrows: false,
-    slidesToShow: 6,
+    slidesToShow: 4,
     slidesToScroll: 1,
     rtl: Boolean(theme.direction === 'rtl'),
     autoplay: true,
@@ -37,7 +36,7 @@ export default function CustomerElearning({ brands }: Props) {
     responsive: [
       {
         breakpoint: theme.breakpoints.values.md,
-        settings: { slidesToShow: 4 },
+        settings: { slidesToShow: 3 },
       },
       {
         breakpoint: theme.breakpoints.values.sm,
@@ -49,16 +48,50 @@ export default function CustomerElearning({ brands }: Props) {
   return (
     <RootStyle>
       <Container>
-        <Stack spacing={3} sx={{ mb: 8, mx: 'auto', maxWidth: 600, textAlign: 'center' }}>
+        <Stack spacing={3} sx={{ mb: 8, mx: 'auto', maxWidth: 640, textAlign: 'center' }}>
+          <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700 }}>
+            Trusted Partners
+          </Typography>
           <Typography variant="h2">We Work With</Typography>
-          <Typography sx={{ color: 'text.secondary' }}>
-          Over the years we have built up a collection of creditable building contracts, feel free to contact them and ask about our workmanship
+          <Typography sx={{ color: 'text.secondary', fontSize: { md: 18 }, lineHeight: 1.8 }}>
+            Over the years we have built up a collection of creditable building contracts. Feel free
+            to contact them and ask about our workmanship.
           </Typography>
         </Stack>
 
         <Slider {...carouselSettings}>
           {brands.map((brand) => (
-            <SvgIconStyle key={brand.id} src={brand.image} sx={{ width: 106, height: 32 }} />
+            <Box key={brand.id} sx={{ px: 2, py: 1 }}>
+              <Box
+                sx={{
+                  px: 3,
+                  py: 2.5,
+                  borderRadius: 2,
+                  bgcolor: 'background.paper',
+                  border: (theme) => `1px solid ${theme.palette.divider}`,
+                  boxShadow: (theme) => `0 8px 24px ${alpha(theme.palette.grey[500], 0.08)}`,
+                  transition: (theme) =>
+                    theme.transitions.create('box-shadow', { duration: theme.transitions.duration.shorter }),
+                  '&:hover': {
+                    boxShadow: (theme) => `0 14px 28px ${alpha(theme.palette.grey[500], 0.12)}`,
+                  },
+                }}
+              >
+                <Box
+                  component="img"
+                  alt={brand.name}
+                  src={brand.image}
+                  loading="eager"
+                  sx={{
+                    width: { xs: 160, sm: 200, md: 220 },
+                    height: { xs: 48, sm: 56, md: 64 },
+                    mx: 'auto',
+                    display: 'block',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
+            </Box>
           ))}
         </Slider>
       </Container>

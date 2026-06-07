@@ -22,11 +22,20 @@ import {
   MarketingLandingProcess,
   MarketingServicesBenefits,
 } from '../src/sections/@marketing';
-import { Box, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import { TestimonialsTravel } from '../src/sections/testimonials/travel';
 
-
 // ----------------------------------------------------------------------
+
+const SectionBand = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'muted',
+})<{ muted?: boolean }>(({ theme, muted }) => ({
+  backgroundColor: muted ? theme.palette.grey[50] : theme.palette.background.default,
+  ...(muted && {
+    borderTop: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  }),
+}));
 
 const galleryImgs = [
   'https://youngroofingltd.com/assets/Images/Hero9.jpeg',
@@ -43,16 +52,23 @@ const galleryImgs = [
 export default function HomePage() {
   return (
     <Page title="K P Young Roofing Limited">
-        <ElearningLandingHero />
-      <Stack spacing={10}>
-        <MarketingLandingAbout />
-          <CaseStudiesGallery images={galleryImgs} />
-        
-        <MarketingLandingProcess />
+      <ElearningLandingHero />
 
-        <TestimonialsTravel testimonials={_testimonials} />
-      <OurClientsElearning brands={_brandsColor} /> 
-      </Stack>
+      <SectionBand muted>
+        <MarketingLandingAbout />
+      </SectionBand>
+
+      <CaseStudiesGallery images={galleryImgs} />
+
+      <SectionBand muted>
+        <MarketingLandingProcess />
+      </SectionBand>
+
+      <TestimonialsTravel testimonials={_testimonials} />
+
+      <SectionBand muted>
+        <OurClientsElearning brands={_brandsColor} />
+      </SectionBand>
     </Page>
   );
 }

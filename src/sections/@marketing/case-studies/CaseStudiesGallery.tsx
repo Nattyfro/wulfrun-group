@@ -2,7 +2,8 @@ import { m } from 'framer-motion';
 import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Container } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { Box, Container, Stack, Typography } from '@mui/material';
 // components
 import { Image, LightboxModal } from '../../../components';
 import { varTranHover } from '../../../components/animate';
@@ -10,10 +11,9 @@ import { varTranHover } from '../../../components/animate';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
-  padding: theme.spacing(8, 0),
+  padding: theme.spacing(10, 0),
   [theme.breakpoints.up('md')]: {
-    paddingTop: theme.spacing(5),
-    paddingBottom: theme.spacing(10),
+    padding: theme.spacing(12, 0),
   },
 }));
 
@@ -37,10 +37,29 @@ export default function TravelTourGallery({ images }: Props) {
   return (
     <RootStyle>
       <Container>
+        <Stack
+          spacing={3}
+          sx={{
+            mb: { xs: 5, md: 7 },
+            maxWidth: 560,
+            mx: { xs: 'auto', md: 0 },
+            textAlign: { xs: 'center', md: 'left' },
+          }}
+        >
+          <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700 }}>
+            Portfolio
+          </Typography>
+          <Typography variant="h2">Recent Projects</Typography>
+          <Typography sx={{ color: 'text.secondary', fontSize: { md: 18 }, lineHeight: 1.8 }}>
+            A snapshot of the roofing work we deliver across homes, developments, and commercial
+            properties.
+          </Typography>
+        </Stack>
+
         <Box
           sx={{
             display: 'grid',
-            gap: 1,
+            gap: 1.5,
             gridTemplateColumns: {
               xs: 'repeat(1, 1fr)',
               md: 'repeat(2, 1fr)',
@@ -100,7 +119,12 @@ function PhotoItem({ photo, onOpenLightbox }: PhotoItemProps) {
         src={photo}
         ratio="1/1"
         onClick={onOpenLightbox}
-        sx={{ borderRadius: 2, cursor: 'pointer' }}
+        sx={{
+          borderRadius: 3,
+          cursor: 'pointer',
+          overflow: 'hidden',
+          boxShadow: (theme) => `0 16px 32px ${alpha(theme.palette.grey[900], 0.12)}`,
+        }}
       />
     </m.div>
   );
