@@ -48,7 +48,9 @@ export const LOCALE_OPTIONS: LocaleOption[] = [
 
 export const SUPPORTED_LOCALES: Locale[] = LOCALE_OPTIONS.map((option) => option.code);
 
-export const TRANSLATED_LOCALES: Locale[] = ['en', 'de', 'fr'];
+export const TRANSLATED_LOCALES: Locale[] = SUPPORTED_LOCALES;
+
+export const RTL_LOCALES: Locale[] = ['ar', 'ur', 'he'];
 
 export const LOCALE_LABELS = Object.fromEntries(
   LOCALE_OPTIONS.map((option) => [option.code, option.label])

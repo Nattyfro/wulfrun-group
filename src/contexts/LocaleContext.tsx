@@ -5,6 +5,7 @@ import { defaultLocale } from '../config';
 import {
   getTranslations,
   Locale,
+  RTL_LOCALES,
   SUPPORTED_LOCALES,
   translateNavTitle,
   TranslationDictionary,
@@ -61,6 +62,7 @@ export function LocaleProvider({ children }: Props) {
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = locale;
+      document.documentElement.dir = RTL_LOCALES.includes(locale) ? 'rtl' : 'ltr';
     }
   }, [locale]);
 

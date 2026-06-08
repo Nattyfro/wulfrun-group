@@ -1,14 +1,13 @@
-import de from './de';
-import en from './en';
-import fr from './fr';
 import {
   filterLocales,
   LOCALE_EMOJIS,
   LOCALE_LABELS,
   LOCALE_NATIVE_LABELS,
+  RTL_LOCALES,
   SUPPORTED_LOCALES,
   TRANSLATED_LOCALES,
 } from './config';
+import dictionaries from './dictionaries';
 import { Locale, TranslationDictionary } from './types';
 
 export type { Locale, TranslationDictionary };
@@ -18,18 +17,13 @@ export {
   LOCALE_EMOJIS,
   LOCALE_LABELS,
   LOCALE_NATIVE_LABELS,
+  RTL_LOCALES,
   SUPPORTED_LOCALES,
   TRANSLATED_LOCALES,
 };
 
-const translations: Partial<Record<Locale, TranslationDictionary>> = {
-  en,
-  de,
-  fr,
-};
-
 export function getTranslations(locale: Locale): TranslationDictionary {
-  return translations[locale] || translations.en!;
+  return dictionaries[locale] || dictionaries.en;
 }
 
 const NAV_TITLE_KEYS: Record<string, keyof TranslationDictionary['nav']> = {
