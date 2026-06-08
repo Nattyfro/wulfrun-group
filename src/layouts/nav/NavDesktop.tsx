@@ -10,6 +10,8 @@ import { styled } from '@mui/material/styles';
 import { Link, Stack, LinkProps } from '@mui/material';
 // @types
 import { NavProps, NavItemDesktopProps } from '../../@types/layout';
+// hooks
+import useLocales from '../../hooks/useLocales';
 // components
 import { Iconify } from '../../components';
 //
@@ -103,6 +105,8 @@ export default function NavDesktop({ isScrolling, isTransparent, navConfig }: Na
 
 function NavItemDesktop({ item, isScrolling, isTransparent }: NavItemDesktopProps) {
   const { title, path, children } = item;
+  const { translateNav } = useLocales();
+  const label = translateNav(title);
 
   const { pathname, asPath } = useRouter();
 
@@ -134,7 +138,7 @@ function NavItemDesktop({ item, isScrolling, isTransparent }: NavItemDesktopProp
           scrolling={isScrolling}
           transparent={isTransparent}
         >
-          {title}
+          {label}
           <Iconify
             icon={open ? chevronUp : chevronDown}
             sx={{
@@ -164,7 +168,7 @@ function NavItemDesktop({ item, isScrolling, isTransparent }: NavItemDesktopProp
         scrolling={isScrolling}
         transparent={isTransparent}
       >
-        {title}
+        {label}
       </RootLinkStyle>
     );
   }
@@ -172,7 +176,7 @@ function NavItemDesktop({ item, isScrolling, isTransparent }: NavItemDesktopProp
   return (
     <NextLink key={title} href={path} passHref>
       <RootLinkStyle active={isActiveRoot} scrolling={isScrolling} transparent={isTransparent}>
-        {title}
+        {label}
       </RootLinkStyle>
     </NextLink>
   );

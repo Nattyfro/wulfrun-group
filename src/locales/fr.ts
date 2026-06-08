@@ -1,0 +1,116 @@
+import { TranslationDictionary } from './types';
+
+const fr: TranslationDictionary = {
+  header: {
+    contactUs: 'Contactez-nous',
+    careers: 'Carrières',
+    support: 'Assistance',
+    signedIn: 'Connecté',
+    signOut: 'Se déconnecter',
+  },
+  logo: {
+    roofingContractors: 'Couvreurs',
+  },
+  nav: {
+    home: 'Accueil',
+    aboutUs: 'À propos',
+    portfolio: 'Portfolio',
+    caseStudy: 'Étude de cas',
+    jobs: 'Emplois',
+    job: 'Emploi',
+    blogPosts: 'Articles de blog',
+    blogPost: 'Article de blog',
+    about: 'À propos',
+    contact: 'Contact',
+    services: 'Services',
+    caseStudies: 'Études de cas',
+    courses: 'Cours',
+    course: 'Cours',
+    tours: 'Visites',
+    tour: 'Visite',
+    checkout: 'Paiement',
+    checkoutComplete: 'Paiement terminé',
+    login: 'Connexion',
+    loginCover: 'Connexion Cover',
+    register: 'Inscription',
+    registerCover: 'Inscription Cover',
+    resetPassword: 'Réinitialiser le mot de passe',
+    verifyCode: 'Vérifier le code',
+    error404: 'Erreur 404',
+    error500: 'Erreur 500',
+    maintenance: 'Maintenance',
+    pricing01: 'Tarifs 01',
+    pricing02: 'Tarifs 02',
+    common: 'Commun',
+    viewAllProjects: 'Voir tous les projets',
+  },
+  home: {
+    heroTitle: 'Toiture premium garantie',
+    heroDescription:
+      'Nous disposons d\'un large éventail de compétences, de connaissances et d\'expérience pour gérer avec succès tout projet de toiture. Nous sommes fiers de notre réputation de service courtois et fiable.',
+    watchVideo: 'Voir la vidéo',
+    viewPortfolio: 'Voir le portfolio',
+    aboutLabel: 'À propos',
+    aboutTitle: 'Qui sommes-nous',
+    aboutDescription:
+      'Nous sommes une entreprise familiale passionnée par la livraison de services de toiture de la plus haute qualité. Notre engagement envers la satisfaction client et l\'excellence du service nous distingue des autres couvreurs de la région.',
+    learnMore: 'En savoir plus',
+    happyClients: 'Clients satisfaits',
+    happyClientsText:
+      'Nos clients sont toujours satisfaits de la qualité de notre travail — avec plus de 2000 clients heureux, ce n\'est pas surprenant !',
+    yearsExperience: 'années d\'expérience',
+    yearsExperienceText:
+      'Nous sommes dans la toiture depuis plus de 30 ans — avec cette expérience, vous pouvez être sûr que nous savons ce que nous faisons !',
+    tilesLaid: 'Tuiles posées',
+    tilesLaidText:
+      'Nous avons posé plus d\'un million de tuiles ! Qu\'il s\'agisse d\'une maison ou d\'un complexe entier, nous sommes les meilleurs du secteur.',
+    processLabel: 'Flux de travail',
+    processTitle: 'Notre processus',
+    processDescription:
+      'Nous avons développé une procédure très efficace pour que votre toiture soit réalisée en toute fluidité. Notre processus minimise les perturbations et maximise votre satisfaction.',
+    survey: 'Inspection',
+    surveyDescription:
+      'Nous évaluons votre toit, discutons des besoins et fournissons des conseils honnêtes.',
+    quote: 'Devis',
+    quoteDescription: 'Vous recevez un devis clair et détaillé sans surprises cachées.',
+    installation: 'Installation',
+    installationDescription:
+      'Notre équipe qualifiée réalise les travaux en toute sécurité, proprement et dans les délais.',
+    completion: 'Finalisation',
+    completionDescription:
+      'Nous inspectons tout, nettoyons le chantier et vous laissons en toute tranquillité.',
+    step: 'Étape',
+    testimonialsLabel: 'Témoignages',
+    testimonialsTitle: 'Ce que disent nos clients',
+    portfolioLabel: 'Portfolio',
+    portfolioTitle: 'Projets récents',
+    portfolioDescription:
+      'Un aperçu de nos travaux de toiture pour maisons, développements et propriétés commerciales.',
+    partnersLabel: 'Partenaires de confiance',
+    partnersTitle: 'Nous travaillons avec',
+    partnersDescription:
+      'Au fil des années, nous avons constitué un réseau de contrats de construction fiables. N\'hésitez pas à les contacter pour vous renseigner sur notre savoir-faire.',
+  },
+  contact: {
+    title: 'Envoyez-nous un message',
+    subtitle: 'Nous répondons généralement sous 24 heures',
+    fullName: 'Nom complet',
+    email: 'E-mail',
+    subject: 'Objet',
+    message: 'Message',
+    send: 'Envoyer',
+    experiment: 'Expérience',
+    successMessage: 'Message envoyé. Nous vous répondrons bientôt.',
+    errorMessage: 'Une erreur s\'est produite. Veuillez réessayer.',
+    fullNameRequired: 'Le nom complet est requis',
+    emailRequired: 'L\'e-mail est requis',
+    emailInvalid: 'Ce n\'est pas une adresse e-mail valide',
+    subjectRequired: 'L\'objet est requis',
+    messageRequired: 'Le message est requis',
+  },
+  footer: {
+    copyright: '© 2026. Tous droits réservés || N° d\'entreprise : 04526466',
+  },
+};
+
+export default fr;

@@ -8,6 +8,8 @@ import { HEADER_DESKTOP_HEIGHT } from '../../config';
 import useOffSetTop from '../../hooks/useOffSetTop';
 // routes
 import Routes from '../../routes';
+// hooks
+import useLocales from '../../hooks/useLocales';
 // components
 import { Logo } from '../../components';
 //
@@ -21,6 +23,7 @@ type Props = {
 };
 
 export default function HeaderSimple({ transparent }: Props) {
+  const { t } = useLocales();
   const isScrolling = useOffSetTop(HEADER_DESKTOP_HEIGHT);
 
   return (
@@ -57,7 +60,7 @@ export default function HeaderSimple({ transparent }: Props) {
                   ...(isScrolling && { color: 'text.primary' }),
                 }}
               >
-                Support
+                {t('header', 'support')}
               </Link>
             </NextLink>
           </Stack>

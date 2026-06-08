@@ -19,6 +19,8 @@ import {
 } from '@mui/material';
 // config
 import { HEADER_DESKTOP_HEIGHT } from '../../config';
+// hooks
+import useLocales from '../../hooks/useLocales';
 // @types
 import { NavDesktopMenuProps } from '../../@types/layout';
 //
@@ -71,6 +73,7 @@ export default function NavDesktopMenu({
   onClose,
   isScrolling,
 }: NavDesktopMenuProps) {
+  const { t } = useLocales();
   const theme = useTheme();
 
   const carouselRef = useRef<Slider | null>(null);
@@ -170,7 +173,7 @@ export default function NavDesktopMenu({
                 href={Routes.marketing.caseStudies}
                 color="inherit"
               >
-                View All Projects
+                {t('nav', 'viewAllProjects')}
               </Button>
               </Box>
           </Stack>

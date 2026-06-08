@@ -4,6 +4,8 @@ import { styled } from '@mui/material/styles';
 import { Grid, Stack, Container, Typography, Button, Divider } from '@mui/material';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import { Iconify } from '../../../components';
 import Routes from '../../../routes';
@@ -21,6 +23,8 @@ const RootStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function MarketingLandingAbout() {
+  const { t } = useLocales();
+
   return (
     <RootStyle>
       <Container>
@@ -32,21 +36,19 @@ export default function MarketingLandingAbout() {
         >
           <Grid item xs={12} md={5} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
             <Typography variant="overline" sx={{ color: 'text.disabled' }}>
-              About Us
+              {t('home', 'aboutLabel')}
             </Typography>
 
             <Typography variant="h2" sx={{ mt: 2, mb: 3 }}>
-              Who Are We
+              {t('home', 'aboutTitle')}
             </Typography>
 
             <Typography sx={{ color: 'text.secondary' }}>
-              We are are a family-run business passionate about delivering the highest quality of
-              roofing services to our valued customers. Our commitment to customer satisfaction and
-              excellence in customer service is what sets us apart from other roofers in the area.
+              {t('home', 'aboutDescription')}
             </Typography>
 
             <Button size="large" endIcon={<Iconify icon={directionStraightRight} />} href={Routes.componentsUI} sx={{ mt: 5 }}>
-              Learn more
+              {t('home', 'learnMore')}
             </Button>
           </Grid>
 
@@ -54,18 +56,18 @@ export default function MarketingLandingAbout() {
             <Stack spacing={5}>
               <LineItem
                 total={fShortenNumber(2000)}
-                label="Happy clients"
-                text="Our clients are always left feeling satisfied with the quality of our work, and with over 2000 happy customers, it's no wonder why!"
+                label={t('home', 'happyClients')}
+                text={t('home', 'happyClientsText')}
               />
               <LineItem
                 total="30"
-                label="years of experience"
-                text="We've been in the roofing for over 30 years and with that kind of experience, you can be sure that we know what we're doing!"
+                label={t('home', 'yearsExperience')}
+                text={t('home', 'yearsExperienceText')}
               />
               <LineItem
                 total={fShortenNumber(1000000)}
-                label="Tiles Laid"
-                text="We've laid down over a million tiles and counting! Whether it's a single house or an entire complex, you can be sure that we're the best in the business."
+                label={t('home', 'tilesLaid')}
+                text={t('home', 'tilesLaidText')}
               />
             </Stack>
           </Grid>

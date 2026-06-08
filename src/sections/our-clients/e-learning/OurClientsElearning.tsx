@@ -3,6 +3,8 @@ import Slider from 'react-slick';
 import { styled, useTheme } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
 import { Typography, Stack, Container, Box } from '@mui/material';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // @types
 import { BrandProps } from '../../../@types/brand';
 
@@ -22,6 +24,7 @@ type Props = {
 };
 
 export default function CustomerElearning({ brands }: Props) {
+  const { t } = useLocales();
   const theme = useTheme();
 
   const carouselSettings = {
@@ -50,12 +53,11 @@ export default function CustomerElearning({ brands }: Props) {
       <Container>
         <Stack spacing={3} sx={{ mb: 8, mx: 'auto', maxWidth: 640, textAlign: 'center' }}>
           <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700 }}>
-            Trusted Partners
+            {t('home', 'partnersLabel')}
           </Typography>
-          <Typography variant="h2">We Work With</Typography>
+          <Typography variant="h2">{t('home', 'partnersTitle')}</Typography>
           <Typography sx={{ color: 'text.secondary', fontSize: { md: 18 }, lineHeight: 1.8 }}>
-            Over the years we have built up a collection of creditable building contracts. Feel free
-            to contact them and ask about our workmanship.
+            {t('home', 'partnersDescription')}
           </Typography>
         </Stack>
 

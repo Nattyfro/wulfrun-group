@@ -26,6 +26,8 @@ import Routes from '../../routes';
 import { DRAWER_WIDTH } from '../../config';
 // @types
 import { NavProps, NavItemMobileProps } from '../../@types/layout';
+// hooks
+import useLocales from '../../hooks/useLocales';
 // components
 import { Logo, Scrollbar, Iconify, NavSection } from '../../components';
 import { IconButtonAnimate } from '../../components/animate';
@@ -110,8 +112,10 @@ export default function NavMobile({ navConfig, sx }: NavProps) {
 
 function NavItemMobile({ item }: NavItemMobileProps) {
   const { pathname } = useRouter();
+  const { translateNav } = useLocales();
 
   const { title, path, children } = item;
+  const label = translateNav(title);
   const rootPath = pathname.split('/')[0];
   const isActiveRoot = pathname === path;
   const isActiveRootWithChild = pathname.includes(`/${rootPath}/`);
@@ -127,7 +131,7 @@ function NavItemMobile({ item }: NavItemMobileProps) {
       // href={Routes.marketing.caseStudies}
       <Button fullWidth  variant='text' href={Routes.marketing.caseStudies} sx={{ml:-1}}>
         <RootLinkStyle onClick={handleOpen} active={isActiveRootWithChild}>
-          <ListItemText disableTypography primary={title} />
+          <ListItemText disableTypography primary={label} />
           {/* <Iconify icon={open ? chevronDown : chevronRight} sx={{ width: 16, height: 16, ml: 1 }} /> */}
         </RootLinkStyle>
 
@@ -191,7 +195,7 @@ function NavItemMobile({ item }: NavItemMobileProps) {
     return (
       <Link href={path} underline="none" target="_blank" rel="noopener">
         <RootLinkStyle>
-          <ListItemText disableTypography primary={title} />
+          <ListItemText disableTypography primary={label} />
         </RootLinkStyle>
       </Link>
     );
@@ -200,7 +204,7 @@ function NavItemMobile({ item }: NavItemMobileProps) {
   return (
     <NextLink key={title} href={path} passHref>
       <RootLinkStyle active={isActiveRoot}>
-        <ListItemText disableTypography primary={title} />
+        <ListItemText disableTypography primary={label} />
       </RootLinkStyle>
     </NextLink>
   );

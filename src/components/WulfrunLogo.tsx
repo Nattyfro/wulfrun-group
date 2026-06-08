@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
+import useLocales from '../hooks/useLocales';
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +18,7 @@ function isLightColor(color?: string) {
 }
 
 function WulfrunLogo({ width = 240, color }: WulfrunLogoProps) {
+  const { t } = useLocales();
   const isMobile = useResponsive('down', 'md');
   const useWhite = isLightColor(color);
   const textColor = useWhite ? '#FFFFFF' : '#212B36';
@@ -78,7 +80,7 @@ function WulfrunLogo({ width = 240, color }: WulfrunLogoProps) {
               whiteSpace: 'nowrap',
             }}
           >
-            Roofing Contractors
+            {t('logo', 'roofingContractors')}
           </Typography>
         </Stack>
       </Stack>

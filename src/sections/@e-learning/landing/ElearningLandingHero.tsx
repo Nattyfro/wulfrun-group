@@ -12,6 +12,7 @@ import { Iconify, TextIconLabel, PlayerWithButton, Image, BgOverlay } from '../.
 import { FabButtonAnimate } from '../../../components/animate';
 import { alpha, useTheme } from '@mui/material/styles';
 import useResponsive from '../../../hooks/useResponsive';
+import useLocales from '../../../hooks/useLocales';
 import Routes from '../../../routes';
 
 // ----------------------------------------------------------------------
@@ -74,6 +75,7 @@ export default function ElearningLandingHero() {
 // ----------------------------------------------------------------------
 
 function Content() {
+  const { t } = useLocales();
   const [openVideo, setOpenVideo] = useState(false);
 
   const handleOpenVideo = () => {
@@ -98,11 +100,9 @@ function Content() {
         color: 'common.white',
       }}
     >
-      <Typography variant="h2">Premium Roofing Guaranteed</Typography>
+      <Typography variant="h2">{t('home', 'heroTitle')}</Typography>
       <Typography sx={{ color: 'grey.300', mt: 3, mb: 5 }}>
-        We boast an extensive array of skills, knowledge and experience that enables us to
-        successfully manage any roofing project. We take great pride in our reputation for
-        delivering courteous.
+        {t('home', 'heroDescription')}
       </Typography>
 
       <Stack
@@ -116,7 +116,7 @@ function Content() {
           onClick={handleOpenVideo}
           endIcon={<Iconify icon={playIcon} />}
         >
-          Watch Video
+          {t('home', 'watchVideo')}
         </Button>
         <Button
           size="large"
@@ -125,7 +125,7 @@ function Content() {
           href={Routes.marketing.caseStudies}
           endIcon={!isMobile && <Iconify icon={chevronRight} />}
         >
-          View Portfolio
+          {t('home', 'viewPortfolio')}
         </Button>
         <PlayerWithButton open={openVideo} onClose={handleCloseVideo} videoPath={_mock.video} />
       </Stack>

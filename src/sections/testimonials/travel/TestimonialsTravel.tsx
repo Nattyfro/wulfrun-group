@@ -7,6 +7,8 @@ import { alpha, styled, useTheme } from '@mui/material/styles';
 import { Typography, Grid, Container, Stack, Box } from '@mui/material';
 // @types
 import { TestimonialProps } from '../../../@types/testimonial';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import { Image, Iconify, CarouselArrows } from '../../../components';
 import cssStyles from '../../../utils/cssStyles';
@@ -54,6 +56,7 @@ type Props = {
 };
 
 export default function TestimonialsTravel({ testimonials }: Props) {
+  const { t } = useLocales();
   const theme = useTheme();
   const carouselRef = useRef<Slider | null>(null);
 
@@ -85,7 +88,7 @@ export default function TestimonialsTravel({ testimonials }: Props) {
                 textAlign: { xs: 'center', md: 'left' },
               }}
             >
-              Testimonials
+              {t('home', 'testimonialsLabel')}
             </Typography>
             <Typography
               variant="h2"
@@ -96,7 +99,7 @@ export default function TestimonialsTravel({ testimonials }: Props) {
                 textAlign: { xs: 'center', md: 'left' },
               }}
             >
-              What Our Customers Say
+              {t('home', 'testimonialsTitle')}
             </Typography>
 
             <Slider ref={carouselRef} {...carouselSettings}>

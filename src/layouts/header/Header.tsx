@@ -1,7 +1,7 @@
 // @mui
 import { Box, Stack, Button, AppBar, Divider, Container } from '@mui/material';
 // hooks
-import { useOffSetTop, useResponsive } from '../../hooks';
+import { useOffSetTop, useResponsive, useLocales } from '../../hooks';
 // routes
 import Routes from '../../routes'; // hey
 // config
@@ -12,6 +12,7 @@ import { Logo } from '../../components';
 import { NavMobile, NavDesktop, navConfig } from '../nav';
 import { ToolbarStyle, ToolbarShadowStyle } from './HeaderToolbarStyle';
 import HeaderAuth from './HeaderAuth';
+import LanguagePopover from '../LanguagePopover';
 import { Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export default function Header({ transparent }: Props) {
+  const { t } = useLocales();
   const isDesktop = useResponsive('up', 'md');
   const isMobile = useResponsive('only', 'xs');
 
@@ -52,6 +54,12 @@ export default function Header({ transparent }: Props) {
           <Box sx={{ flexGrow: 1, minWidth: { xs: 8, md: 0 } }} />
 
           <Stack spacing={2} direction="row" alignItems="center">
+            <LanguagePopover
+              sx={{
+                ...(isScrolling && { color: 'text.primary' }),
+              }}
+            />
+
             <HeaderAuth onDark={transparent && !isScrolling} />
 
             {!isMobile ? (
@@ -70,7 +78,7 @@ export default function Header({ transparent }: Props) {
                 href={Routes.eLearning.contact}
                 sx={{ fontSize: 10, borderRadius: 50 }}
               >
-                Careers
+                {t('header', 'careers')}
               </Button>
             )}
             {!isMobile && (
@@ -84,7 +92,7 @@ export default function Header({ transparent }: Props) {
             {isDesktop && (
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" href={Routes.eLearning.contact}>
-                  Contact Us
+                  {t('header', 'contactUs')}
                 </Button>
               </Stack>
             )}

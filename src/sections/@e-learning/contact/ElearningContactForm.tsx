@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import NextLink from 'next/link';
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // config
 import { HEADER_DESKTOP_HEIGHT } from '../../../config';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // @mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
@@ -69,13 +71,6 @@ const FormPanel = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const FormSchema = Yup.object().shape({
-  fullName: Yup.string().required('Full name is required'),
-  email: Yup.string().required('Email is required').email('That is not an email'),
-  subject: Yup.string().required('Subject is required'),
-  message: Yup.string().required('Message is required'),
-});
-
 type FormValuesProps = {
   fullName: string;
   email: string;
@@ -87,8 +82,22 @@ type FormValuesProps = {
 const WEB3FORMS_ACCESS_KEY = '66d18c61-b34f-4ee3-ba66-7a3fbc82d2b2';
 
 export default function ElearningContactForm() {
+  const { t } = useLocales();
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const formSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        fullName: Yup.string().required(t('contact', 'fullNameRequired')),
+        email: Yup.string()
+          .required(t('contact', 'emailRequired'))
+          .email(t('contact', 'emailInvalid')),
+        subject: Yup.string().required(t('contact', 'subjectRequired')),
+        message: Yup.string().required(t('contact', 'messageRequired')),
+      }),
+    [t]
+  );
 
   const {
     reset,
@@ -97,7 +106,7 @@ export default function ElearningContactForm() {
     formState: { isSubmitting },
   } = useForm<FormValuesProps>({
     mode: 'onTouched',
-    resolver: yupResolver(FormSchema),
+    resolver: yupResolver(formSchema),
     defaultValues: {
       fullName: '',
       subject: '',
@@ -158,23 +167,21 @@ export default function ElearningContactForm() {
             textAlign: { xs: 'center', md: 'left' },
           }}
         >
-          <Typography variant="h3">Drop us a message</Typography>
-          <Typography sx={{ color: 'text.secondary' }}>
-            We normally respond within 24 hours
-          </Typography>
+          <Typography variant="h3">{t('contact', 'title')}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t('contact', 'subtitle')}</Typography>
         </Stack>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2.5} alignItems="flex-start">
             {submitStatus === 'success' && (
               <Alert severity="success" sx={{ width: 1 }}>
-                Message sent. We&apos;ll get back to you soon.
+                {t('contact', 'successMessage')}
               </Alert>
             )}
 
             {submitStatus === 'error' && (
               <Alert severity="error" sx={{ width: 1 }}>
-                {errorMessage || 'Something went wrong. Please try again.'}
+                {errorMessage || t('contact', 'errorMessage')}
               </Alert>
             )}
             <Controller
@@ -184,7 +191,7 @@ export default function ElearningContactForm() {
                 <TextField
                   {...field}
                   fullWidth
-                  label="Full name"
+                  label={t('contact', 'fullName')}
                   error={Boolean(error)}
                   helperText={error?.message}
                 />
@@ -198,7 +205,7 @@ export default function ElearningContactForm() {
                 <TextField
                   {...field}
                   fullWidth
-                  label="Email"
+                  label={t('contact', 'email')}
                   error={Boolean(error)}
                   helperText={error?.message}
                 />
@@ -212,7 +219,7 @@ export default function ElearningContactForm() {
                 <TextField
                   {...field}
                   fullWidth
-                  label="Subject"
+                  label={t('contact', 'subject')}
                   error={Boolean(error)}
                   helperText={error?.message}
                 />
@@ -228,7 +235,7 @@ export default function ElearningContactForm() {
                   fullWidth
                   multiline
                   rows={4}
-                  label="Message"
+                  label={t('contact', 'message')}
                   error={Boolean(error)}
                   helperText={error?.message}
                   sx={{ pb: 2.5 }}
@@ -254,7 +261,7 @@ export default function ElearningContactForm() {
                 },
               }}
             >
-              Send
+              {t('contact', 'send')}
             </LoadingButton>
 
             <Link
@@ -267,7 +274,7 @@ export default function ElearningContactForm() {
                 fontWeight: 500,
               }}
             >
-              Experiment
+              {t('contact', 'experiment')}
             </Link>
           </Stack>
         </form>

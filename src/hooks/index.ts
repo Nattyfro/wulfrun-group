@@ -8,3 +8,4 @@ export { default as useLocalStorage } from './useLocalStorage';
 export { default as useHoverParallax } from './useHoverParallax';
 export { default as useBoundingClientRect } from './useBoundingClientRect';
 export { default as useSupabaseAuth } from './useSupabaseAuth';
+export { default as useLocales } from './useLocales';

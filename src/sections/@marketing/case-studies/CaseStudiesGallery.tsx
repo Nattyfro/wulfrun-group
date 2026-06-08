@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
 import { Box, Container, Stack, Typography } from '@mui/material';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import { Image, LightboxModal } from '../../../components';
 import { varTranHover } from '../../../components/animate';
@@ -24,6 +26,7 @@ type Props = {
 };
 
 export default function TravelTourGallery({ images }: Props) {
+  const { t } = useLocales();
   const [openLightbox, setOpenLightbox] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number>(0);
 
@@ -47,12 +50,11 @@ export default function TravelTourGallery({ images }: Props) {
           }}
         >
           <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700 }}>
-            Portfolio
+            {t('home', 'portfolioLabel')}
           </Typography>
-          <Typography variant="h2">Recent Projects</Typography>
+          <Typography variant="h2">{t('home', 'portfolioTitle')}</Typography>
           <Typography sx={{ color: 'text.secondary', fontSize: { md: 18 }, lineHeight: 1.8 }}>
-            A snapshot of the roofing work we deliver across homes, developments, and commercial
-            properties.
+            {t('home', 'portfolioDescription')}
           </Typography>
         </Stack>
 

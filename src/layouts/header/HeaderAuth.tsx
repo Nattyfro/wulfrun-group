@@ -14,6 +14,7 @@ import {
 // hooks
 import useSupabaseAuth, { getAuthAvatarUrl, getAuthDisplayName } from '../../hooks/useSupabaseAuth';
 import useResponsive from '../../hooks/useResponsive';
+import useLocales from '../../hooks/useLocales';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ const UserChip = styled(Stack)(({ theme }) => ({
 }));
 
 export default function HeaderAuth({ onDark = false }: Props) {
+  const { t } = useLocales();
   const isMobile = useResponsive('only', 'xs');
   const { user, loading, signOut, isConfigured } = useSupabaseAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -80,7 +82,7 @@ export default function HeaderAuth({ onDark = false }: Props) {
             </Typography>
           </Box>
           <Divider />
-          <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+          <MenuItem onClick={handleSignOut}>{t('header', 'signOut')}</MenuItem>
         </Menu>
       </>
     );
@@ -107,7 +109,7 @@ export default function HeaderAuth({ onDark = false }: Props) {
             variant="caption"
             sx={{ color: subtextColor, display: 'block', lineHeight: 1.2 }}
           >
-            Signed in
+            {t('header', 'signedIn')}
           </Typography>
           <Typography
             variant="subtitle2"
@@ -135,7 +137,7 @@ export default function HeaderAuth({ onDark = false }: Props) {
           </Typography>
         </Box>
         <Divider />
-        <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+        <MenuItem onClick={handleSignOut}>{t('header', 'signOut')}</MenuItem>
       </Menu>
     </>
   );

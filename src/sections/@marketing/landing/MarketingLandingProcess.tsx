@@ -6,33 +6,10 @@ import checkmarkFilled from '@iconify/icons-carbon/checkmark-filled';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Stack, Container, Typography, Card, Box } from '@mui/material';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import { Iconify } from '../../../components';
-
-// ----------------------------------------------------------------------
-
-const SERVICES = [
-  {
-    name: 'Survey',
-    description: 'We assess your roof, discuss requirements, and provide honest advice.',
-    icon: taskIcon,
-  },
-  {
-    name: 'Quote',
-    description: 'You receive a clear, detailed quote with no hidden surprises.',
-    icon: documentIcon,
-  },
-  {
-    name: 'Installation',
-    description: 'Our skilled team completes the work safely, cleanly, and on schedule.',
-    icon: buildingIcon,
-  },
-  {
-    name: 'Completion',
-    description: 'We inspect everything, tidy the site, and leave you with total peace of mind.',
-    icon: checkmarkFilled,
-  },
-];
 
 const RootStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(10, 0),
@@ -44,6 +21,31 @@ const RootStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function MarketingLandingProcess() {
+  const { t } = useLocales();
+
+  const services = [
+    {
+      name: t('home', 'survey'),
+      description: t('home', 'surveyDescription'),
+      icon: taskIcon,
+    },
+    {
+      name: t('home', 'quote'),
+      description: t('home', 'quoteDescription'),
+      icon: documentIcon,
+    },
+    {
+      name: t('home', 'installation'),
+      description: t('home', 'installationDescription'),
+      icon: buildingIcon,
+    },
+    {
+      name: t('home', 'completion'),
+      description: t('home', 'completionDescription'),
+      icon: checkmarkFilled,
+    },
+  ];
+
   return (
     <RootStyle>
       <Container>
@@ -56,17 +58,15 @@ export default function MarketingLandingProcess() {
           }}
         >
           <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700 }}>
-            Work Flow
+            {t('home', 'processLabel')}
           </Typography>
 
           <Typography variant="h2" sx={{ mt: 2, mb: 3 }}>
-            Working Process
+            {t('home', 'processTitle')}
           </Typography>
 
           <Typography sx={{ color: 'text.secondary', fontSize: { md: 18 }, lineHeight: 1.8 }}>
-            We have developed a highly efficient procedure to ensure that your roof is completed as
-            seamlessly as possible. Our process is designed to minimise disruption and maximise
-            satisfaction, resulting in a stress-free experience for you.
+            {t('home', 'processDescription')}
           </Typography>
         </Stack>
 
@@ -82,8 +82,14 @@ export default function MarketingLandingProcess() {
             },
           }}
         >
-          {SERVICES.map((service, index) => (
-            <ServiceItem key={service.name} service={service} index={index} />
+          {services.map((service, index) => (
+            <ServiceItem
+              key={service.name}
+              service={service}
+              index={index}
+              total={services.length}
+              stepLabel={t('home', 'step')}
+            />
           ))}
         </Box>
       </Container>
@@ -100,9 +106,11 @@ type ServiceItemProps = {
     icon: typeof taskIcon;
   };
   index: number;
+  total: number;
+  stepLabel: string;
 };
 
-function ServiceItem({ service, index }: ServiceItemProps) {
+function ServiceItem({ service, index, total, stepLabel }: ServiceItemProps) {
   const { name, description, icon } = service;
 
   return (
@@ -139,12 +147,12 @@ function ServiceItem({ service, index }: ServiceItemProps) {
       </Stack>
 
       <Typography variant="overline" sx={{ color: 'text.disabled' }}>
-        Step {index + 1}
+        {stepLabel} {index + 1}
       </Typography>
 
       <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1, mb: 1.5, typography: 'h5' }}>
         {name}
-        {index !== SERVICES.length - 1 && (
+        {index !== total - 1 && (
           <Iconify icon={directionStraightRight} sx={{ width: 20, height: 20, color: 'text.disabled' }} />
         )}
       </Stack>

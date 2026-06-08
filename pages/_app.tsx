@@ -24,6 +24,7 @@ import { AppProps } from 'next/app';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 // contexts
+import { LocaleProvider } from '../src/contexts/LocaleContext';
 import { SettingsProvider } from '../src/contexts/SettingsContext';
 // theme
 import ThemeProvider from '../src/theme';
@@ -59,18 +60,20 @@ export default function MyApp(props: MyAppProps) {
       </Head>
 
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <SettingsProvider>
-          <ThemeProvider>
-            <ThemeColorPresets>
-              <MotionLazyContainer>
-                <RtlLayout>
-                  <ProgressBar />
-                  {getLayout(<Component {...pageProps} />)}
-                </RtlLayout>
-              </MotionLazyContainer>
-            </ThemeColorPresets>
-          </ThemeProvider>
-        </SettingsProvider>
+        <LocaleProvider>
+          <SettingsProvider>
+            <ThemeProvider>
+              <ThemeColorPresets>
+                <MotionLazyContainer>
+                  <RtlLayout>
+                    <ProgressBar />
+                    {getLayout(<Component {...pageProps} />)}
+                  </RtlLayout>
+                </MotionLazyContainer>
+              </ThemeColorPresets>
+            </ThemeProvider>
+          </SettingsProvider>
+        </LocaleProvider>
       </LocalizationProvider>
     </>
   );
