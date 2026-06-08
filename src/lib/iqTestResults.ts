@@ -1,7 +1,8 @@
-import { getSupabase } from './supabase';
-
-type SaveIqResultInput = {
-  userId: string;
+export type SaveIqResultInput = {
+  userId?: string | null;
+  email?: string | null;
+  fullName?: string | null;
+  authProvider: string;
   answers: number[];
   score: number;
   totalQuestions: number;
@@ -10,21 +11,29 @@ type SaveIqResultInput = {
 };
 
 export async function saveIqResultToSupabase(input: SaveIqResultInput) {
-  const supabase = getSupabase();
-  if (!supabase) return { saved: false as const, error: 'Supabase is not configured' };
+  try {
+    const response = await fetch('/api/iq-results', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(input),
+    });
 
-  const { error } = await supabase.from('iq_test_results').insert({
-    user_id: input.userId,
-    score: input.score,
-    total_questions: input.totalQuestions,
-    estimated_iq: input.estimatedIq,
-    iq_label: input.iqLabel,
-    answers: input.answers,
-  });
+    const result = await response.json();
 
-  if (error) {
-    return { saved: false as const, error: error.message };
+    if (!response.ok) {
+      return {
+        saved: false as const,
+        error: result.error || 'Failed to save quiz result',
+      };
+    }
+
+    return { saved: true as const };
+  } catch (error) {
+    return {
+      saved: false as const,
+      error: error instanceof Error ? error.message : 'Failed to save quiz result',
+    };
   }
-
-  return { saved: true as const };
 }

@@ -38,6 +38,7 @@ import {
   savePendingIqResults,
 } from '../../lib/iqTestStorage';
 import { saveIqResultToSupabase } from '../../lib/iqTestResults';
+import { getAuthDisplayName } from '../../hooks/useSupabaseAuth';
 import { SOCIAL_AUTH_PROVIDERS } from '../../config/socialAuth';
 
 // ----------------------------------------------------------------------
@@ -391,7 +392,12 @@ export default function IqTest() {
 
   const unlockResults = async (
     answersToUse: number[],
-    options?: { userId?: string; provider?: 'oauth' | 'email' }
+    options: {
+      authProvider: string;
+      userId?: string | null;
+      email?: string | null;
+      fullName?: string | null;
+    }
   ) => {
     const score = answersToUse.reduce(
       (total, answer, index) => total + (answer === QUESTIONS[index].correctIndex ? 1 : 0),
@@ -399,15 +405,20 @@ export default function IqTest() {
     );
     const estimate = getIqEstimate(score);
 
-    if (options?.userId && options.provider === 'oauth') {
-      await saveIqResultToSupabase({
-        userId: options.userId,
-        answers: answersToUse,
-        score,
-        totalQuestions: QUESTIONS.length,
-        estimatedIq: estimate.midpoint,
-        iqLabel: estimate.label,
-      });
+    const saveResult = await saveIqResultToSupabase({
+      userId: options.userId ?? null,
+      email: options.email ?? null,
+      fullName: options.fullName ?? null,
+      authProvider: options.authProvider,
+      answers: answersToUse,
+      score,
+      totalQuestions: QUESTIONS.length,
+      estimatedIq: estimate.midpoint,
+      iqLabel: estimate.label,
+    });
+
+    if (!saveResult.saved) {
+      console.error('Failed to save IQ result:', saveResult.error);
     }
 
     setAnswers(answersToUse);
@@ -440,9 +451,16 @@ export default function IqTest() {
 
         if (!session) return;
 
+        const authProvider =
+          session.user.app_metadata?.provider ||
+          session.user.identities?.[0]?.provider ||
+          'oauth';
+
         await unlockResults(currentPending.answers, {
           userId: session.user.id,
-          provider: 'oauth',
+          email: session.user.email,
+          fullName: getAuthDisplayName(session.user),
+          authProvider,
         });
 
         if (router.query.show) {
@@ -590,7 +608,11 @@ export default function IqTest() {
         throw new Error(result.message || 'Signup failed');
       }
 
-      await unlockResults(answers, { provider: 'email' });
+      await unlockResults(answers, {
+        authProvider: 'email',
+        email: data.email,
+        fullName: data.fullName,
+      });
     } catch (error) {
       setSignupError(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
     }
