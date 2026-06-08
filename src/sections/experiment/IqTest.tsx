@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { IconifyIcon } from '@iconify/react';
+import chartRadar from '@iconify/icons-carbon/chart-radar';
+import timeIcon from '@iconify/icons-carbon/time';
+import categoryIcon from '@iconify/icons-carbon/category';
 // @mui
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import {
@@ -411,7 +415,7 @@ export default function IqTest() {
           </Stack>
         )}
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {phase === 'intro' && (
             <m.div
               key="intro"
@@ -431,11 +435,13 @@ export default function IqTest() {
                   </Stack>
 
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    {[
-                      { icon: 'carbon:chart-radar', label: '10 questions' },
-                      { icon: 'carbon:time', label: '~5 minutes' },
-                      { icon: 'carbon:category', label: '5 skill areas' },
-                    ].map((item) => (
+                    {(
+                      [
+                        { icon: chartRadar, label: '10 questions' },
+                        { icon: timeIcon, label: '~5 minutes' },
+                        { icon: categoryIcon, label: '5 skill areas' },
+                      ] as { icon: IconifyIcon; label: string }[]
+                    ).map((item) => (
                       <Box
                         key={item.label}
                         sx={{
