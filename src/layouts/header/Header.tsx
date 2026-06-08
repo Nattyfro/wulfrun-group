@@ -1,4 +1,5 @@
 // @mui
+import { alpha } from '@mui/material/styles';
 import { Box, Stack, Button, AppBar, Divider, Container } from '@mui/material';
 // hooks
 import { useOffSetTop, useResponsive, useLocales } from '../../hooks';
@@ -27,6 +28,7 @@ export default function Header({ transparent }: Props) {
   const isMobile = useResponsive('only', 'xs');
 
   const isScrolling = useOffSetTop(HEADER_DESKTOP_HEIGHT);
+  const onDark = Boolean(transparent && !isScrolling);
 
   return (
     <AppBar sx={{ boxShadow: 0, bgcolor: 'transparent' }}>
@@ -73,10 +75,27 @@ export default function Header({ transparent }: Props) {
               </Typography>
             ) : (
               <Button
-                variant="outlined"
-                size="small"
+                component="a"
                 href={Routes.eLearning.contact}
-                sx={{ fontSize: 10, borderRadius: 50 }}
+                size="small"
+                sx={(theme) => ({
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  minHeight: 32,
+                  px: 1.25,
+                  py: 0.5,
+                  borderRadius: 1,
+                  boxShadow: 'none',
+                  color: onDark ? 'common.white' : 'text.primary',
+                  bgcolor: 'transparent',
+                  '&:hover': {
+                    bgcolor: onDark
+                      ? alpha(theme.palette.common.white, 0.1)
+                      : alpha(theme.palette.grey[500], 0.08),
+                    boxShadow: 'none',
+                  },
+                })}
               >
                 {t('header', 'careers')}
               </Button>
