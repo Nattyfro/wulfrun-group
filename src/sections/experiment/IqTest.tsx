@@ -1,23 +1,43 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import * as Yup from 'yup';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { m, AnimatePresence } from 'framer-motion';
 import { IconifyIcon } from '@iconify/react';
 import chartRadar from '@iconify/icons-carbon/chart-radar';
 import timeIcon from '@iconify/icons-carbon/time';
 import categoryIcon from '@iconify/icons-carbon/category';
+import lockedIcon from '@iconify/icons-carbon/locked';
+import logoGoogle from '@iconify/icons-carbon/logo-google';
 // @mui
 import { alpha, styled, useTheme } from '@mui/material/styles';
+import { LoadingButton } from '@mui/lab';
 import {
+  Alert,
   Box,
   Button,
   Card,
+  Checkbox,
   Chip,
   Container,
+  Divider,
+  FormControlLabel,
   LinearProgress,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 // components
 import { Iconify } from '../../components';
+// lib
+import { getSupabase, isSupabaseConfigured } from '../../lib/supabase';
+import {
+  clearPendingIqResults,
+  loadPendingIqResults,
+  savePendingIqResults,
+} from '../../lib/iqTestStorage';
+import { saveIqResultToSupabase } from '../../lib/iqTestResults';
 
 // ----------------------------------------------------------------------
 
@@ -290,7 +310,21 @@ function ShapeMatrix() {
 
 // ----------------------------------------------------------------------
 
-type Phase = 'intro' | 'quiz' | 'results';
+const SignupSchema = Yup.object().shape({
+  fullName: Yup.string().required('Full name is required'),
+  email: Yup.string().required('Email is required').email('Enter a valid email'),
+  consent: Yup.boolean().oneOf([true], 'You must agree to continue'),
+});
+
+type SignupValues = {
+  fullName: string;
+  email: string;
+  consent: boolean;
+};
+
+const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || '';
+
+type Phase = 'intro' | 'quiz' | 'signup' | 'results';
 
 function getIqEstimate(correctCount: number) {
   const estimates = [
@@ -312,13 +346,36 @@ function getIqEstimate(correctCount: number) {
 
 export default function IqTest() {
   const theme = useTheme();
+  const router = useRouter();
   const [phase, setPhase] = useState<Phase>('intro');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
+  const [signupError, setSignupError] = useState('');
+  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+
+  const {
+    control: signupControl,
+    handleSubmit: handleSignupSubmit,
+    reset: resetSignup,
+    formState: { isSubmitting: isSigningUp },
+  } = useForm<SignupValues>({
+    mode: 'onTouched',
+    resolver: yupResolver(SignupSchema),
+    defaultValues: {
+      fullName: '',
+      email: '',
+      consent: false,
+    },
+  });
 
   const currentQuestion = QUESTIONS[currentIndex];
-  const progress = ((currentIndex + (phase === 'results' ? 1 : 0)) / QUESTIONS.length) * 100;
+  const progress =
+    phase === 'signup' || phase === 'results'
+      ? 100
+      : phase === 'quiz'
+        ? ((currentIndex + 1) / QUESTIONS.length) * 100
+        : 0;
 
   const correctCount = useMemo(
     () =>
@@ -330,6 +387,115 @@ export default function IqTest() {
   );
 
   const iqResult = useMemo(() => getIqEstimate(correctCount), [correctCount]);
+
+  const unlockResults = async (
+    answersToUse: number[],
+    options?: { userId?: string; provider?: 'google' | 'email' }
+  ) => {
+    const score = answersToUse.reduce(
+      (total, answer, index) => total + (answer === QUESTIONS[index].correctIndex ? 1 : 0),
+      0
+    );
+    const estimate = getIqEstimate(score);
+
+    if (options?.userId && options.provider === 'google') {
+      await saveIqResultToSupabase({
+        userId: options.userId,
+        answers: answersToUse,
+        score,
+        totalQuestions: QUESTIONS.length,
+        estimatedIq: estimate.midpoint,
+        iqLabel: estimate.label,
+      });
+    }
+
+    setAnswers(answersToUse);
+    clearPendingIqResults();
+    setPhase('results');
+  };
+
+  useEffect(() => {
+    const restoreGoogleSignIn = async () => {
+      if (!isSupabaseConfigured) return;
+
+      const pending = loadPendingIqResults();
+      if (!pending) return;
+
+      const supabase = getSupabase();
+      if (!supabase) return;
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) return;
+
+      await unlockResults(pending.answers, {
+        userId: session.user.id,
+        provider: 'google',
+      });
+    };
+
+    restoreGoogleSignIn();
+  }, []);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    if (router.query.error === 'auth') {
+      setSignupError('Google sign-in failed. Please try again.');
+      setPhase('signup');
+    }
+
+    if (router.query.error === 'supabase') {
+      setSignupError('Google sign-in is not configured yet. Use email signup for now.');
+      setPhase('signup');
+    }
+  }, [router.isReady, router.query.error]);
+
+  const handleGoogleSignIn = async () => {
+    setSignupError('');
+
+    if (!isSupabaseConfigured) {
+      setSignupError(
+        'Google sign-in is not set up yet. Add your Supabase keys to .env.local, or use email signup.'
+      );
+      return;
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) {
+      setSignupError('Google sign-in is unavailable right now.');
+      return;
+    }
+
+    if (answers.length !== QUESTIONS.length) {
+      setSignupError('Complete the test before signing in.');
+      return;
+    }
+
+    setIsGoogleSigningIn(true);
+
+    try {
+      savePendingIqResults(answers);
+
+      const redirectTo = `${window.location.origin}/experiment/auth/callback`;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo },
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      clearPendingIqResults();
+      setSignupError(
+        error instanceof Error ? error.message : 'Google sign-in failed. Please try again.'
+      );
+      setIsGoogleSigningIn(false);
+    }
+  };
 
   const handleStart = () => {
     setPhase('quiz');
@@ -349,7 +515,7 @@ export default function IqTest() {
     setAnswers(nextAnswers);
 
     if (currentIndex === QUESTIONS.length - 1) {
-      setPhase('results');
+      setPhase('signup');
       return;
     }
 
@@ -357,11 +523,62 @@ export default function IqTest() {
     setSelectedIndex(null);
   };
 
+  const onSignup = async (data: SignupValues) => {
+    setSignupError('');
+
+    const score = answers.reduce(
+      (total, answer, index) => total + (answer === QUESTIONS[index].correctIndex ? 1 : 0),
+      0
+    );
+    const estimate = getIqEstimate(score);
+
+    try {
+      if (!WEB3FORMS_ACCESS_KEY) {
+        throw new Error('Email signup is not configured yet.');
+      }
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          name: data.fullName,
+          email: data.email,
+          subject: 'IQ Challenge signup',
+          message: [
+            `Name: ${data.fullName}`,
+            `Email: ${data.email}`,
+            `Score: ${score}/${QUESTIONS.length}`,
+            `Estimated IQ: ${estimate.midpoint}`,
+            `Range: ${estimate.label}`,
+          ].join('\n'),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Signup failed');
+      }
+
+      await unlockResults(answers, { provider: 'email' });
+    } catch (error) {
+      setSignupError(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+    }
+  };
+
   const handleRetake = () => {
     setPhase('intro');
     setCurrentIndex(0);
     setSelectedIndex(null);
     setAnswers([]);
+    setSignupError('');
+    setIsGoogleSigningIn(false);
+    clearPendingIqResults();
+    resetSignup();
   };
 
   return (
@@ -393,7 +610,9 @@ export default function IqTest() {
               <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                 {phase === 'results'
                   ? 'Assessment complete'
-                  : `Question ${currentIndex + 1} of ${QUESTIONS.length}`}
+                  : phase === 'signup'
+                    ? 'Sign up to unlock results'
+                    : `Question ${currentIndex + 1} of ${QUESTIONS.length}`}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {Math.round(progress)}%
@@ -545,8 +764,165 @@ export default function IqTest() {
                       fontWeight: 700,
                     }}
                   >
-                    {currentIndex === QUESTIONS.length - 1 ? 'See results' : 'Next question'}
+                    {currentIndex === QUESTIONS.length - 1 ? 'Finish test' : 'Next question'}
                   </Button>
+                </Stack>
+              </QuestionCard>
+            </m.div>
+          )}
+
+          {phase === 'signup' && (
+            <m.div
+              key="signup"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.28 }}
+            >
+              <QuestionCard sx={{ p: { xs: 3, md: 4 } }}>
+                <Stack spacing={3}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="flex-start"
+                    sx={{
+                      p: 2.5,
+                      borderRadius: 2,
+                      background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(
+                        theme.palette.secondary.main,
+                        0.08
+                      )} 100%)`,
+                      border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        bgcolor: alpha(theme.palette.primary.main, 0.12),
+                      }}
+                    >
+                      <Iconify icon={lockedIcon} width={24} sx={{ color: 'primary.main' }} />
+                    </Box>
+                    <Stack spacing={0.5}>
+                      <Typography variant="h5">Your results are ready</Typography>
+                      <Typography sx={{ color: 'text.secondary' }}>
+                        Create a free account to unlock your IQ score and personalised breakdown.
+                      </Typography>
+                    </Stack>
+                  </Stack>
+
+                  <Stack spacing={2.5}>
+                    {signupError && <Alert severity="error">{signupError}</Alert>}
+
+                    <LoadingButton
+                      size="large"
+                      variant="outlined"
+                      loading={isGoogleSigningIn}
+                      onClick={handleGoogleSignIn}
+                      startIcon={<Iconify icon={logoGoogle} width={20} />}
+                      sx={{
+                        py: 1.4,
+                        textTransform: 'none',
+                        fontWeight: 700,
+                        borderColor: alpha(theme.palette.grey[500], 0.24),
+                        color: 'text.primary',
+                        bgcolor: 'background.paper',
+                        '&:hover': {
+                          bgcolor: alpha(theme.palette.grey[500], 0.06),
+                          borderColor: alpha(theme.palette.grey[500], 0.4),
+                        },
+                      }}
+                    >
+                      Continue with Google
+                    </LoadingButton>
+
+                    <Divider>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', px: 1 }}>
+                        or sign up with email
+                      </Typography>
+                    </Divider>
+                  </Stack>
+
+                  <form onSubmit={handleSignupSubmit(onSignup)}>
+                    <Stack spacing={2.5} sx={{ mt: 2.5 }}>
+                      <Controller
+                        name="fullName"
+                        control={signupControl}
+                        render={({ field, fieldState: { error } }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            label="Full name"
+                            error={Boolean(error)}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name="email"
+                        control={signupControl}
+                        render={({ field, fieldState: { error } }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            label="Email address"
+                            error={Boolean(error)}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name="consent"
+                        control={signupControl}
+                        render={({ field, fieldState: { error } }) => (
+                          <Box>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={field.value}
+                                  onChange={(event) => field.onChange(event.target.checked)}
+                                />
+                              }
+                              label={
+                                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                  I agree to receive my results and occasional updates from Wulfrun
+                                  Group.
+                                </Typography>
+                              }
+                            />
+                            {error && (
+                              <Typography variant="caption" color="error" sx={{ pl: 1.5 }}>
+                                {error.message}
+                              </Typography>
+                            )}
+                          </Box>
+                        )}
+                      />
+
+                      <LoadingButton
+                        size="large"
+                        type="submit"
+                        variant="contained"
+                        loading={isSigningUp}
+                        sx={{
+                          alignSelf: 'flex-start',
+                          px: 4,
+                          textTransform: 'none',
+                          fontWeight: 700,
+                        }}
+                      >
+                        View my results
+                      </LoadingButton>
+                    </Stack>
+                  </form>
                 </Stack>
               </QuestionCard>
             </m.div>

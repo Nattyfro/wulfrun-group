@@ -52,13 +52,17 @@ function WulfrunLogo({ width = 240, color }: WulfrunLogoProps) {
             component="span"
             sx={{
               fontSize: 14.5,
-              fontWeight: 700,
               color: textColor,
               letterSpacing: '-0.02em',
               whiteSpace: 'nowrap',
+              display: 'inline-flex',
+              alignItems: 'baseline',
+              gap: '0.04em',
             }}
           >
-            Wulfrun{' '}
+            <Box component="span" sx={{ fontWeight: 700 }}>
+              Wulfrun
+            </Box>
             <Box component="span" sx={{ fontWeight: 300 }}>
               Group
             </Box>
