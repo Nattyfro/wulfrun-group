@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import NextLink from 'next/link';
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -7,7 +8,7 @@ import { HEADER_DESKTOP_HEIGHT } from '../../../config';
 // @mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import { Alert, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Link, Stack, TextField, Typography } from '@mui/material';
 // ----------------------------------------------------------------------
 
 const brushFadeMask = 'url(/assets/masks/brush-fade-split.svg)';
@@ -255,6 +256,19 @@ export default function ElearningContactForm() {
             >
               Send
             </LoadingButton>
+
+            <Link
+              component={NextLink}
+              href="/experiment"
+              underline="hover"
+              sx={{
+                mx: { xs: 'auto', md: 0 },
+                color: 'text.secondary',
+                fontWeight: 500,
+              }}
+            >
+              Experiment
+            </Link>
           </Stack>
         </form>
       </FormPanel>
