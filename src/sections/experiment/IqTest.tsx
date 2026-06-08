@@ -415,32 +415,53 @@ export default function IqTest() {
   };
 
   useEffect(() => {
-    const restoreGoogleSignIn = async () => {
-      if (!isSupabaseConfigured) return;
+    if (!router.isReady) return;
 
+    let subscription: { unsubscribe: () => void } | undefined;
+
+    const tryUnlockGoogleResults = async () => {
       const pending = loadPendingIqResults();
-      if (!pending) return;
+      const shouldShowResults = router.query.show === 'results';
+
+      if (!pending && !shouldShowResults) return;
+      if (!isSupabaseConfigured) return;
 
       const supabase = getSupabase();
       if (!supabase) return;
 
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const unlockIfReady = async () => {
+        const currentPending = loadPendingIqResults();
+        if (!currentPending) return;
 
-      if (!session) return;
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      await unlockResults(pending.answers, {
-        userId: session.user.id,
-        provider: 'google',
-      });
+        if (!session) return;
+
+        await unlockResults(currentPending.answers, {
+          userId: session.user.id,
+          provider: 'google',
+        });
+
+        if (router.query.show) {
+          router.replace('/experiment', undefined, { shallow: true });
+        }
+      };
+
+      await unlockIfReady();
+
+      if (loadPendingIqResults()) {
+        const authListener = supabase.auth.onAuthStateChange((event) => {
+          if (event === 'SIGNED_IN') {
+            unlockIfReady();
+          }
+        });
+        subscription = authListener.data.subscription;
+      }
     };
 
-    restoreGoogleSignIn();
-  }, []);
-
-  useEffect(() => {
-    if (!router.isReady) return;
+    tryUnlockGoogleResults();
 
     if (router.query.error === 'auth') {
       setSignupError('Google sign-in failed. Please try again.');
@@ -451,7 +472,11 @@ export default function IqTest() {
       setSignupError('Google sign-in is not configured yet. Use email signup for now.');
       setPhase('signup');
     }
-  }, [router.isReady, router.query.error]);
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [router.isReady, router.query.show, router.query.error]);
 
   const handleGoogleSignIn = async () => {
     setSignupError('');

@@ -5,21 +5,28 @@ export type PendingIqResults = {
   completedAt: string;
 };
 
+function getStorage() {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage;
+}
+
 export function savePendingIqResults(answers: number[]) {
-  if (typeof window === 'undefined') return;
+  const storage = getStorage();
+  if (!storage) return;
 
   const payload: PendingIqResults = {
     answers,
     completedAt: new Date().toISOString(),
   };
 
-  sessionStorage.setItem(PENDING_RESULTS_KEY, JSON.stringify(payload));
+  storage.setItem(PENDING_RESULTS_KEY, JSON.stringify(payload));
 }
 
 export function loadPendingIqResults(): PendingIqResults | null {
-  if (typeof window === 'undefined') return null;
+  const storage = getStorage();
+  if (!storage) return null;
 
-  const raw = sessionStorage.getItem(PENDING_RESULTS_KEY);
+  const raw = storage.getItem(PENDING_RESULTS_KEY);
   if (!raw) return null;
 
   try {
@@ -30,6 +37,7 @@ export function loadPendingIqResults(): PendingIqResults | null {
 }
 
 export function clearPendingIqResults() {
-  if (typeof window === 'undefined') return;
-  sessionStorage.removeItem(PENDING_RESULTS_KEY);
+  const storage = getStorage();
+  if (!storage) return;
+  storage.removeItem(PENDING_RESULTS_KEY);
 }

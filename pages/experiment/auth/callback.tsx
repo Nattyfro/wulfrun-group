@@ -7,6 +7,8 @@ import { getSupabase, isSupabaseConfigured } from '../../../src/lib/supabase';
 
 // ----------------------------------------------------------------------
 
+const RESULTS_REDIRECT = '/experiment?show=results';
+
 export default function ExperimentAuthCallback() {
   const router = useRouter();
 
@@ -23,6 +25,11 @@ export default function ExperimentAuthCallback() {
     }
 
     let timeoutId: ReturnType<typeof setTimeout>;
+    let subscription: { unsubscribe: () => void } | undefined;
+
+    const goToResults = () => {
+      router.replace(RESULTS_REDIRECT);
+    };
 
     const finishSignIn = async () => {
       const {
@@ -30,22 +37,22 @@ export default function ExperimentAuthCallback() {
       } = await supabase.auth.getSession();
 
       if (session) {
-        router.replace('/experiment');
+        goToResults();
         return;
       }
 
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((event, newSession) => {
+      const authListener = supabase.auth.onAuthStateChange((event, newSession) => {
         if (event === 'SIGNED_IN' && newSession) {
-          subscription.unsubscribe();
+          authListener.data.subscription.unsubscribe();
           clearTimeout(timeoutId);
-          router.replace('/experiment');
+          goToResults();
         }
       });
 
+      subscription = authListener.data.subscription;
+
       timeoutId = setTimeout(() => {
-        subscription.unsubscribe();
+        subscription?.unsubscribe();
         router.replace('/experiment?error=auth');
       }, 12000);
     };
@@ -54,6 +61,7 @@ export default function ExperimentAuthCallback() {
 
     return () => {
       clearTimeout(timeoutId);
+      subscription?.unsubscribe();
     };
   }, [router]);
 
@@ -70,7 +78,9 @@ export default function ExperimentAuthCallback() {
       }}
     >
       <CircularProgress />
-      <Typography sx={{ color: 'text.secondary' }}>Signing you in with Google...</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>
+        Signing you in — taking you back to your results...
+      </Typography>
     </Box>
   );
 }
