@@ -9,7 +9,7 @@ import chartRadar from '@iconify/icons-carbon/chart-radar';
 import timeIcon from '@iconify/icons-carbon/time';
 import categoryIcon from '@iconify/icons-carbon/category';
 import lockedIcon from '@iconify/icons-carbon/locked';
-import logoGoogle from '@iconify/icons-carbon/logo-google';
+import { Provider } from '@supabase/supabase-js';
 // @mui
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
@@ -38,6 +38,7 @@ import {
   savePendingIqResults,
 } from '../../lib/iqTestStorage';
 import { saveIqResultToSupabase } from '../../lib/iqTestResults';
+import { SOCIAL_AUTH_PROVIDERS } from '../../config/socialAuth';
 
 // ----------------------------------------------------------------------
 
@@ -352,7 +353,7 @@ export default function IqTest() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
   const [signupError, setSignupError] = useState('');
-  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+  const [activeOAuthProvider, setActiveOAuthProvider] = useState<Provider | null>(null);
 
   const {
     control: signupControl,
@@ -390,7 +391,7 @@ export default function IqTest() {
 
   const unlockResults = async (
     answersToUse: number[],
-    options?: { userId?: string; provider?: 'google' | 'email' }
+    options?: { userId?: string; provider?: 'oauth' | 'email' }
   ) => {
     const score = answersToUse.reduce(
       (total, answer, index) => total + (answer === QUESTIONS[index].correctIndex ? 1 : 0),
@@ -398,7 +399,7 @@ export default function IqTest() {
     );
     const estimate = getIqEstimate(score);
 
-    if (options?.userId && options.provider === 'google') {
+    if (options?.userId && options.provider === 'oauth') {
       await saveIqResultToSupabase({
         userId: options.userId,
         answers: answersToUse,
@@ -441,7 +442,7 @@ export default function IqTest() {
 
         await unlockResults(currentPending.answers, {
           userId: session.user.id,
-          provider: 'google',
+          provider: 'oauth',
         });
 
         if (router.query.show) {
@@ -478,19 +479,19 @@ export default function IqTest() {
     };
   }, [router.isReady, router.query.show, router.query.error]);
 
-  const handleGoogleSignIn = async () => {
+  const handleOAuthSignIn = async (provider: Provider) => {
     setSignupError('');
 
     if (!isSupabaseConfigured) {
       setSignupError(
-        'Google sign-in is not set up yet. Add your Supabase keys to .env.local, or use email signup.'
+        'Social sign-in is not set up yet. Add your Supabase keys to .env.local, or use email signup.'
       );
       return;
     }
 
     const supabase = getSupabase();
     if (!supabase) {
-      setSignupError('Google sign-in is unavailable right now.');
+      setSignupError('Social sign-in is unavailable right now.');
       return;
     }
 
@@ -499,14 +500,14 @@ export default function IqTest() {
       return;
     }
 
-    setIsGoogleSigningIn(true);
+    setActiveOAuthProvider(provider);
 
     try {
       savePendingIqResults(answers);
 
       const redirectTo = `${window.location.origin}/experiment/auth/callback`;
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider,
         options: { redirectTo },
       });
 
@@ -516,9 +517,9 @@ export default function IqTest() {
     } catch (error) {
       clearPendingIqResults();
       setSignupError(
-        error instanceof Error ? error.message : 'Google sign-in failed. Please try again.'
+        error instanceof Error ? error.message : 'Sign-in failed. Please try again.'
       );
-      setIsGoogleSigningIn(false);
+      setActiveOAuthProvider(null);
     }
   };
 
@@ -601,7 +602,7 @@ export default function IqTest() {
     setSelectedIndex(null);
     setAnswers([]);
     setSignupError('');
-    setIsGoogleSigningIn(false);
+    setActiveOAuthProvider(null);
     clearPendingIqResults();
     resetSignup();
   };
@@ -845,27 +846,37 @@ export default function IqTest() {
                   <Stack spacing={2.5}>
                     {signupError && <Alert severity="error">{signupError}</Alert>}
 
-                    <LoadingButton
-                      size="large"
-                      variant="outlined"
-                      loading={isGoogleSigningIn}
-                      onClick={handleGoogleSignIn}
-                      startIcon={<Iconify icon={logoGoogle} width={20} />}
-                      sx={{
-                        py: 1.4,
-                        textTransform: 'none',
-                        fontWeight: 700,
-                        borderColor: alpha(theme.palette.grey[500], 0.24),
-                        color: 'text.primary',
-                        bgcolor: 'background.paper',
-                        '&:hover': {
-                          bgcolor: alpha(theme.palette.grey[500], 0.06),
-                          borderColor: alpha(theme.palette.grey[500], 0.4),
-                        },
-                      }}
-                    >
-                      Continue with Google
-                    </LoadingButton>
+                    {SOCIAL_AUTH_PROVIDERS.map((socialProvider) => (
+                      <LoadingButton
+                        key={socialProvider.id}
+                        size="large"
+                        variant="outlined"
+                        loading={activeOAuthProvider === socialProvider.id}
+                        disabled={
+                          activeOAuthProvider !== null && activeOAuthProvider !== socialProvider.id
+                        }
+                        onClick={() => handleOAuthSignIn(socialProvider.id)}
+                        startIcon={
+                          socialProvider.icon ? (
+                            <Iconify icon={socialProvider.icon} width={20} />
+                          ) : undefined
+                        }
+                        sx={{
+                          py: 1.4,
+                          textTransform: 'none',
+                          fontWeight: 700,
+                          borderColor: alpha(theme.palette.grey[500], 0.24),
+                          color: 'text.primary',
+                          bgcolor: 'background.paper',
+                          '&:hover': {
+                            bgcolor: alpha(theme.palette.grey[500], 0.06),
+                            borderColor: alpha(theme.palette.grey[500], 0.4),
+                          },
+                        }}
+                      >
+                        {socialProvider.label}
+                      </LoadingButton>
+                    ))}
 
                     <Divider>
                       <Typography variant="caption" sx={{ color: 'text.secondary', px: 1 }}>

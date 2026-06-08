@@ -7,3 +7,4 @@ export { default as useResponsive } from './useResponsive';
 export { default as useLocalStorage } from './useLocalStorage';
 export { default as useHoverParallax } from './useHoverParallax';
 export { default as useBoundingClientRect } from './useBoundingClientRect';
+export { default as useSupabaseAuth } from './useSupabaseAuth';

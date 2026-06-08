@@ -11,6 +11,7 @@ import { Logo } from '../../components';
 //
 import { NavMobile, NavDesktop, navConfig } from '../nav';
 import { ToolbarStyle, ToolbarShadowStyle } from './HeaderToolbarStyle';
+import HeaderAuth from './HeaderAuth';
 import { Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -50,7 +51,9 @@ export default function Header({ transparent }: Props) {
           <Logo onDark={transparent && !isScrolling} sx={{ mr: { xs: 0.5, md: 0 } }} />
           <Box sx={{ flexGrow: 1, minWidth: { xs: 8, md: 0 } }} />
 
-          <Stack spacing={5} direction="row" alignItems="center">
+          <Stack spacing={2} direction="row" alignItems="center">
+            <HeaderAuth onDark={transparent && !isScrolling} />
+
             {!isMobile ? (
               <Typography
                 sx={{
