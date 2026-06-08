@@ -33,6 +33,9 @@ export default function Header({ transparent }: Props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-start',
+            gap: { xs: 1, md: 0 },
+            pl: { xs: 'max(20px, env(safe-area-inset-left))', md: 2.5 },
+            pr: { xs: 'max(20px, env(safe-area-inset-right))', md: 2.5 },
           }}
         >
           {isDesktop && (
@@ -44,8 +47,8 @@ export default function Header({ transparent }: Props) {
           )}
 
           {isDesktop && <Box sx={{ flexGrow: 1 }} />}
-          <Logo onDark={transparent && !isScrolling} />
-          <Box sx={{ flexGrow: 1 }} />
+          <Logo onDark={transparent && !isScrolling} sx={{ mr: { xs: 0.5, md: 0 } }} />
+          <Box sx={{ flexGrow: 1, minWidth: { xs: 8, md: 0 } }} />
 
           <Stack spacing={5} direction="row" alignItems="center">
             {!isMobile ? (

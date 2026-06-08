@@ -22,7 +22,7 @@ function Logo({ onDark = false, isSimple = false, sx }: LogoProps) {
   const LIGHT_COLOR = theme.palette.common.white;
   const DARK_COLOR = theme.palette.grey[800];
 
-  const isMobile = useResponsive('only', 'xs')
+  const isMobile = useResponsive('down', 'md');
 
   return (
     <NextLink href="/" passHref>
@@ -30,11 +30,14 @@ function Logo({ onDark = false, isSimple = false, sx }: LogoProps) {
         underline="none"
         sx={{
           display: 'inline-flex',
+          alignItems: 'center',
           lineHeight: 0,
+          minWidth: 0,
+          flexShrink: 1,
           ...sx,
         }}
       >
-        <WulfrunLogo width={!isMobile ? 240 : 160} color={onDark ? LIGHT_COLOR : DARK_COLOR} />
+        <WulfrunLogo width={isMobile ? 168 : 240} color={onDark ? LIGHT_COLOR : DARK_COLOR} />
       </Link>
     </NextLink>
   );
