@@ -8,8 +8,7 @@ import Layout from '../../src/layouts';
 // components
 import { Page } from '../../src/components';
 // sections
-import { NewsletterElearning } from '../../src/sections/newsletter';
-import { ElearningContactInfo, ElearningContactForm } from '../../src/sections/@e-learning';
+import { ElearningContactForm } from '../../src/sections/@e-learning';
 
 // ----------------------------------------------------------------------
 
