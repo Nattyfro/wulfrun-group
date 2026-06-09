@@ -87,6 +87,7 @@
     "message": "Üzenet",
     "send": "Elküld",
     "experiment": "Kísérlet",
+    "experimentII": "Experiment II",
     "successMessage": "Üzenet elküldve. Hamarosan jelentkezünk.",
     "errorMessage": "Valami elromlott. Kérjük, próbálja újra.",
     "fullNameRequired": "A teljes név megadása kötelező",

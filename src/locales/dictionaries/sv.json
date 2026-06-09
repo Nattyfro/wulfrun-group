@@ -87,6 +87,7 @@
     "message": "Meddelande",
     "send": "Skicka",
     "experiment": "Experimentera",
+    "experimentII": "Experiment II",
     "successMessage": "Meddelande skickat. Vi återkommer snart.",
     "errorMessage": "Något gick fel. Försök igen.",
     "fullNameRequired": "Fullständigt namn krävs",

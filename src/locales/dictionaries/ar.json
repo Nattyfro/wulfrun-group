@@ -87,6 +87,7 @@
     "message": "رسالة",
     "send": "يرسل",
     "experiment": "تجربة",
+    "experimentII": "Experiment II",
     "successMessage": "تم إرسال الرسالة. سوف نعود اليكم قريبا.",
     "errorMessage": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
     "fullNameRequired": "الاسم الكامل مطلوب",

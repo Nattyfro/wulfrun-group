@@ -87,6 +87,7 @@
     "message": "Bericht",
     "send": "Versturen",
     "experiment": "Experiment",
+    "experimentII": "Experiment II",
     "successMessage": "Bericht verzonden. We nemen snel contact met u op.",
     "errorMessage": "Er is iets misgegaan. Probeer het opnieuw.",
     "fullNameRequired": "Volledige naam is vereist",

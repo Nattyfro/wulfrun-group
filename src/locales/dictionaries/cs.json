@@ -87,6 +87,7 @@
     "message": "Zpráva",
     "send": "Poslat",
     "experiment": "Experimentovat",
+    "experimentII": "Experiment II",
     "successMessage": "Zpráva odeslána. Brzy se vám ozveme.",
     "errorMessage": "Něco se pokazilo. Zkuste to prosím znovu.",
     "fullNameRequired": "Je vyžadováno celé jméno",

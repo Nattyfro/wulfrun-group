@@ -87,6 +87,7 @@
     "message": "Viesti",
     "send": "Lähetä",
     "experiment": "Kokeilu",
+    "experimentII": "Experiment II",
     "successMessage": "Viesti lähetetty. Palaamme asiaan pian.",
     "errorMessage": "Jotain meni pieleen. Yritä uudelleen.",
     "fullNameRequired": "Koko nimi vaaditaan",

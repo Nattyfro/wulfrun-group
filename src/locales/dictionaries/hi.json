@@ -87,6 +87,7 @@
     "message": "संदेश",
     "send": "भेजना",
     "experiment": "प्रयोग",
+    "experimentII": "Experiment II",
     "successMessage": "संदेश भेजा गया। हम जल्द ही आपसे संपर्क करेंगे.",
     "errorMessage": "कुछ गलत हो गया। कृपया पुन: प्रयास करें।",
     "fullNameRequired": "पूरा नाम आवश्यक है",

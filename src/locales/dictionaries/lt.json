@@ -87,6 +87,7 @@
     "message": "Pranešimas",
     "send": "Siųsti",
     "experiment": "Eksperimentuokite",
+    "experimentII": "Experiment II",
     "successMessage": "Pranešimas išsiųstas. Netrukus su jumis susisieksime.",
     "errorMessage": "Kažkas nutiko. Bandykite dar kartą.",
     "fullNameRequired": "Reikalingas visas vardas",

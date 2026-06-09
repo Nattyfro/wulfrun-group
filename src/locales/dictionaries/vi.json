@@ -87,6 +87,7 @@
     "message": "Tin nhắn",
     "send": "Gửi",
     "experiment": "Cuộc thí nghiệm",
+    "experimentII": "Experiment II",
     "successMessage": "Đã gửi tin nhắn. Chúng tôi sẽ liên hệ lại với bạn sớm.",
     "errorMessage": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "fullNameRequired": "Tên đầy đủ là bắt buộc",

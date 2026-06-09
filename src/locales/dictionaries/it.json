@@ -87,6 +87,7 @@
     "message": "Messaggio",
     "send": "Inviare",
     "experiment": "Sperimentare",
+    "experimentII": "Experiment II",
     "successMessage": "Messaggio inviato. Ti risponderemo presto.",
     "errorMessage": "Qualcosa è andato storto. Per favore riprova.",
     "fullNameRequired": "È richiesto il nome completo",

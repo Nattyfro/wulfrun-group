@@ -87,6 +87,7 @@
     "message": "Съобщение",
     "send": "Изпратете",
     "experiment": "Експериментирайте",
+    "experimentII": "Experiment II",
     "successMessage": "Съобщението е изпратено. Ще се свържем с вас скоро.",
     "errorMessage": "Нещо се обърка. Моля, опитайте отново.",
     "fullNameRequired": "Изисква се пълно име",

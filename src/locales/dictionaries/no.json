@@ -87,6 +87,7 @@
     "message": "Beskjed",
     "send": "Sende",
     "experiment": "Eksperiment",
+    "experimentII": "Experiment II",
     "successMessage": "Melding sendt. Vi kommer snart tilbake til deg.",
     "errorMessage": "Noe gikk galt. Vennligst prøv igjen.",
     "fullNameRequired": "Fullt navn kreves",

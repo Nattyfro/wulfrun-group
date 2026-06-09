@@ -87,6 +87,7 @@
     "message": "信息",
     "send": "发送",
     "experiment": "实验",
+    "experimentII": "Experiment II",
     "successMessage": "消息已发送。我们会尽快回复您。",
     "errorMessage": "出了点问题。请再试一次。",
     "fullNameRequired": "需要全名",

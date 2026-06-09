@@ -87,6 +87,7 @@
     "message": "Besked",
     "send": "Sende",
     "experiment": "Eksperiment",
+    "experimentII": "Experiment II",
     "successMessage": "Besked sendt. Vi vender snart tilbage til dig.",
     "errorMessage": "Noget gik galt. Prøv venligst igen.",
     "fullNameRequired": "Fuldt navn er påkrævet",

@@ -87,6 +87,7 @@
     "message": "Poruka",
     "send": "Pošalji",
     "experiment": "Eksperimentiraj",
+    "experimentII": "Experiment II",
     "successMessage": "Poruka poslana. Javit ćemo vam se uskoro.",
     "errorMessage": "Nešto je pošlo po zlu. Molimo pokušajte ponovo.",
     "fullNameRequired": "Puno ime je obavezno",

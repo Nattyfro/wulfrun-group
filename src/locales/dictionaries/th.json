@@ -87,6 +87,7 @@
     "message": "ข้อความ",
     "send": "ส่ง",
     "experiment": "การทดลอง",
+    "experimentII": "Experiment II",
     "successMessage": "ส่งข้อความแล้ว เราจะติดต่อกลับโดยเร็วที่สุด",
     "errorMessage": "มีบางอย่างผิดพลาด โปรดลองอีกครั้ง",
     "fullNameRequired": "ต้องระบุชื่อเต็ม",

@@ -87,6 +87,7 @@
     "message": "Wiadomość",
     "send": "Wysłać",
     "experiment": "Eksperyment",
+    "experimentII": "Experiment II",
     "successMessage": "Wiadomość wysłana. Wkrótce się z Tobą skontaktujemy.",
     "errorMessage": "Coś poszło nie tak. Spróbuj ponownie.",
     "fullNameRequired": "Wymagane jest pełne imię i nazwisko",

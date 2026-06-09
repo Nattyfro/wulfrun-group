@@ -87,6 +87,7 @@
     "message": "Mesaj",
     "send": "Trimite",
     "experiment": "Experiment",
+    "experimentII": "Experiment II",
     "successMessage": "Mesaj trimis. Vom reveni la tine în curând.",
     "errorMessage": "Ceva a mers prost. Vă rugăm să încercați din nou.",
     "fullNameRequired": "Numele complet este necesar",

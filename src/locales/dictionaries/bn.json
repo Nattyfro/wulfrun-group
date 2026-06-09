@@ -87,6 +87,7 @@
     "message": "বার্তা",
     "send": "পাঠান",
     "experiment": "পরীক্ষা",
+    "experimentII": "Experiment II",
     "successMessage": "বার্তা পাঠানো হয়েছে। আমরা শীঘ্রই আপনার কাছে ফিরে আসব।",
     "errorMessage": "কিছু ভুল হয়েছে আবার চেষ্টা করুন.",
     "fullNameRequired": "সম্পূর্ণ নাম প্রয়োজন",

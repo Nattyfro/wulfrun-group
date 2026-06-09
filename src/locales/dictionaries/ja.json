@@ -87,6 +87,7 @@
     "message": "メッセージ",
     "send": "送信",
     "experiment": "実験",
+    "experimentII": "Experiment II",
     "successMessage": "メッセージが送信されました。すぐにご連絡いたします。",
     "errorMessage": "何か問題が発生しました。もう一度試してください。",
     "fullNameRequired": "フルネームは必須です",

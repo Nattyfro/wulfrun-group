@@ -100,6 +100,7 @@ const fr: TranslationDictionary = {
     message: 'Message',
     send: 'Envoyer',
     experiment: 'Expérience',
+    experimentII: 'Expérience II',
     successMessage: 'Message envoyé. Nous vous répondrons bientôt.',
     errorMessage: 'Une erreur s\'est produite. Veuillez réessayer.',
     fullNameRequired: 'Le nom complet est requis',

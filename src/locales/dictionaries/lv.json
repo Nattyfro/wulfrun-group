@@ -87,6 +87,7 @@
     "message": "Ziņa",
     "send": "Sūtīt",
     "experiment": "Eksperimentējiet",
+    "experimentII": "Experiment II",
     "successMessage": "Ziņa nosūtīta. Mēs drīz ar jums sazināsimies.",
     "errorMessage": "Kaut kas nogāja greizi. Lūdzu, mēģiniet vēlreiz.",
     "fullNameRequired": "Jānorāda pilns vārds",

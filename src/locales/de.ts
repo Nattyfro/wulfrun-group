@@ -100,6 +100,7 @@ const de: TranslationDictionary = {
     message: 'Nachricht',
     send: 'Senden',
     experiment: 'Experiment',
+    experimentII: 'Experiment II',
     successMessage: 'Nachricht gesendet. Wir melden uns bald bei Ihnen.',
     errorMessage: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.',
     fullNameRequired: 'Vollständiger Name ist erforderlich',

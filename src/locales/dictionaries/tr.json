@@ -87,6 +87,7 @@
     "message": "Mesaj",
     "send": "Göndermek",
     "experiment": "Deney",
+    "experimentII": "Experiment II",
     "successMessage": "Mesaj gönderildi. Yakında size geri döneceğiz.",
     "errorMessage": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
     "fullNameRequired": "Tam ad gerekli",

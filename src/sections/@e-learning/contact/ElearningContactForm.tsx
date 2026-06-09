@@ -276,6 +276,19 @@ export default function ElearningContactForm() {
             >
               {t('contact', 'experiment')}
             </Link>
+
+            <Link
+              component={NextLink}
+              href="/experiment-ii"
+              underline="hover"
+              sx={{
+                mx: { xs: 'auto', md: 0 },
+                color: 'text.secondary',
+                fontWeight: 500,
+              }}
+            >
+              {t('contact', 'experimentII') || 'Experiment II'}
+            </Link>
           </Stack>
         </form>
       </FormPanel>

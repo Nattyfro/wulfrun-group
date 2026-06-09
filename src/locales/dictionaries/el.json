@@ -87,6 +87,7 @@
     "message": "Μήνυμα",
     "send": "Στέλνω",
     "experiment": "Πείραμα",
+    "experimentII": "Experiment II",
     "successMessage": "Το μήνυμα εστάλη. Θα επικοινωνήσουμε μαζί σας σύντομα.",
     "errorMessage": "Κάτι πήγε στραβά. Δοκιμάστε ξανά.",
     "fullNameRequired": "Απαιτείται πλήρες όνομα",

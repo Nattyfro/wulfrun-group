@@ -125,6 +125,7 @@ export type TranslationDictionary = {
     message: string;
     send: string;
     experiment: string;
+    experimentII: string;
     successMessage: string;
     errorMessage: string;
     fullNameRequired: string;
