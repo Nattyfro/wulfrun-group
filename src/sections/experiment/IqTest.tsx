@@ -40,6 +40,7 @@ import {
 import { saveIqResultToSupabase } from '../../lib/iqTestResults';
 import { getAuthDisplayName } from '../../hooks/useSupabaseAuth';
 import { SOCIAL_AUTH_PROVIDERS } from '../../config/socialAuth';
+import ChallengeShareButton from './ChallengeShareButton';
 
 // ----------------------------------------------------------------------
 
@@ -1052,14 +1053,28 @@ export default function IqTest() {
                     })}
                   </Stack>
 
-                  <Button
-                    size="large"
-                    variant="outlined"
-                    onClick={handleRetake}
-                    sx={{ px: 4, textTransform: 'none', fontWeight: 700 }}
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems="center"
+                    sx={{ width: 1, maxWidth: 480 }}
                   >
-                    Retake test
-                  </Button>
+                    <ChallengeShareButton
+                      score={correctCount}
+                      totalQuestions={QUESTIONS.length}
+                      estimatedIq={iqResult.midpoint}
+                      fullWidth
+                    />
+                    <Button
+                      size="large"
+                      variant="outlined"
+                      onClick={handleRetake}
+                      fullWidth
+                      sx={{ px: 4, textTransform: 'none', fontWeight: 700 }}
+                    >
+                      Retake test
+                    </Button>
+                  </Stack>
                 </Stack>
               </QuestionCard>
             </m.div>

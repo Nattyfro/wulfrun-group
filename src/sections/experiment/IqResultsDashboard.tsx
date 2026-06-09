@@ -5,6 +5,10 @@ import chartRadar from '@iconify/icons-carbon/chart-radar';
 import userMultiple from '@iconify/icons-carbon/user-multiple';
 import trophy from '@iconify/icons-carbon/trophy';
 import activity from '@iconify/icons-carbon/activity';
+import timeIcon from '@iconify/icons-carbon/time';
+import chartLine from '@iconify/icons-carbon/chart-line';
+import certificate from '@iconify/icons-carbon/certificate';
+import logoGoogle from '@iconify/icons-carbon/logo-google';
 // @mui
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import {
@@ -23,6 +27,9 @@ import {
 import { Iconify } from '../../components';
 // lib
 import { fetchIqResults, IqTestResult } from '../../lib/iqTestResults';
+import { IqComment } from '../../lib/iqComments';
+import IqCommentsSection from './IqCommentsSection';
+import ChallengeShareButton from './ChallengeShareButton';
 
 // ----------------------------------------------------------------------
 
@@ -47,17 +54,65 @@ const StatCard = styled(Card)(({ theme }) => ({
   height: '100%',
 }));
 
-const ResultCard = styled(Card)(({ theme }) => ({
-  borderRadius: Number(theme.shape.borderRadius) * 2,
-  border: `1px solid ${alpha(theme.palette.grey[500], 0.12)}`,
-  boxShadow: `0 12px 24px ${alpha(theme.palette.grey[900], 0.05)}`,
+const PortraitCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'topIq',
+})<{ topIq?: boolean }>(({ theme, topIq }) => ({
+  position: 'relative',
+  overflow: 'hidden',
+  borderRadius: 20,
+  width: '100%',
+  maxWidth: 360,
+  mx: 'auto',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  background: topIq
+    ? `linear-gradient(180deg, ${alpha(theme.palette.primary.main, 0.06)} 0%, ${theme.palette.common.white} 42%)`
+    : `linear-gradient(180deg, ${theme.palette.common.white} 0%, ${alpha(
+        theme.palette.grey[500],
+        0.04
+      )} 100%)`,
+  border: `1px solid ${alpha(theme.palette.grey[500], 0.14)}`,
+  boxShadow: `0 16px 32px ${alpha(theme.palette.grey[900], 0.06)}`,
   transition: theme.transitions.create(['box-shadow', 'transform'], {
     duration: theme.transitions.duration.shorter,
   }),
+  ...(topIq && {
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      width: 4,
+      background: `linear-gradient(180deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+    },
+  }),
   '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: `0 20px 40px ${alpha(theme.palette.grey[900], 0.08)}`,
+    transform: 'translateY(-4px)',
+    boxShadow: `0 24px 44px ${alpha(theme.palette.grey[900], 0.1)}`,
   },
+}));
+
+const CardGrid = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 360px))',
+  justifyContent: 'center',
+  gap: theme.spacing(3.5),
+}));
+
+const IqBadge = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'highlighted',
+})<{ highlighted?: boolean }>(({ theme, highlighted }) => ({
+  flexShrink: 0,
+  minWidth: 56,
+  padding: theme.spacing(1.25, 1.5),
+  borderRadius: Number(theme.shape.borderRadius) * 1.5,
+  textAlign: 'center',
+  backgroundColor: highlighted
+    ? alpha(theme.palette.primary.main, 0.14)
+    : alpha(theme.palette.primary.main, 0.08),
+  border: `1px solid ${alpha(theme.palette.primary.main, highlighted ? 0.28 : 0.16)}`,
 }));
 
 // ----------------------------------------------------------------------
@@ -92,20 +147,44 @@ function getAuthLabel(provider: string) {
   return provider;
 }
 
-function getScoreColor(score: number, total: number) {
-  const ratio = score / total;
-  if (ratio >= 0.8) return 'success';
-  if (ratio >= 0.6) return 'info';
-  if (ratio >= 0.4) return 'warning';
-  return 'default';
+function getAuthIcon(provider: string): IconifyIcon | null {
+  if (provider === 'google') return logoGoogle;
+  return null;
 }
 
 function formatCompletedAt(dateString: string) {
   const date = new Date(dateString);
   return {
-    absolute: format(date, 'd MMM yyyy, HH:mm'),
+    short: format(date, 'd MMM yyyy'),
     relative: formatDistanceToNow(date, { addSuffix: true }),
   };
+}
+
+function shortenIqLabel(label: string) {
+  return label.replace(/\s*range$/i, '').trim();
+}
+
+type CardStatProps = {
+  icon: IconifyIcon;
+  label: string;
+  value: string;
+  iconColor?: string;
+};
+
+function CardStat({ icon, label, value, iconColor = 'text.secondary' }: CardStatProps) {
+  return (
+    <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ minWidth: 0, flex: 1 }}>
+      <Iconify icon={icon} width={18} sx={{ color: iconColor, flexShrink: 0, mt: 0.5 }} />
+      <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.4 }}>
+          {label}
+        </Typography>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.4 }}>
+          {value}
+        </Typography>
+      </Stack>
+    </Stack>
+  );
 }
 
 // ----------------------------------------------------------------------
@@ -113,11 +192,15 @@ function formatCompletedAt(dateString: string) {
 type Props = {
   initialResults?: IqTestResult[];
   initialError?: string | null;
+  initialComments?: IqComment[];
+  initialCommentsError?: string | null;
 };
 
 export default function IqResultsDashboard({
   initialResults = [],
   initialError = null,
+  initialComments = [],
+  initialCommentsError = null,
 }: Props) {
   const theme = useTheme();
   const [results, setResults] = useState<IqTestResult[]>(initialResults);
@@ -170,6 +253,11 @@ export default function IqResultsDashboard({
     };
   }, [results]);
 
+  const topIqScore = useMemo(
+    () => (results.length ? Math.max(...results.map((result) => result.estimated_iq)) : 0),
+    [results]
+  );
+
   const statItems: StatItem[] = [
     {
       label: 'Participants',
@@ -217,6 +305,9 @@ export default function IqResultsDashboard({
               Everyone who completed the first experiment and unlocked their results. Scores,
               estimated IQ, sign-up method, and completion time in one place.
             </Typography>
+            <Box sx={{ pt: 1, maxWidth: 360 }}>
+              <ChallengeShareButton />
+            </Box>
           </Stack>
         </HeroStyle>
 
@@ -291,136 +382,173 @@ export default function IqResultsDashboard({
               </Typography>
             </Stack>
 
-            <Stack spacing={2}>
-              {results.map((result, index) => {
+            <CardGrid>
+              {results.map((result) => {
                 const displayName = getDisplayName(result);
                 const completedAt = formatCompletedAt(result.created_at);
                 const accuracy = Math.round((result.score / result.total_questions) * 100);
+                const isTopIq = result.estimated_iq === topIqScore;
+                const authIcon = getAuthIcon(result.auth_provider);
 
                 return (
-                  <ResultCard key={result.id} sx={{ p: { xs: 2.5, md: 3 } }}>
-                    <Stack
-                      direction={{ xs: 'column', md: 'row' }}
-                      spacing={2.5}
-                      alignItems={{ xs: 'flex-start', md: 'center' }}
-                      justifyContent="space-between"
-                    >
-                      <Stack direction="row" spacing={2} alignItems="center" sx={{ minWidth: 0 }}>
-                        <Avatar
-                          src={result.avatar_url || undefined}
-                          alt={displayName}
-                          imgProps={{ referrerPolicy: 'no-referrer' }}
-                          sx={{
-                            width: 52,
-                            height: 52,
-                            fontWeight: 700,
-                            bgcolor: alpha(theme.palette.primary.main, 0.12),
-                            color: 'primary.main',
-                          }}
-                        >
-                          {getInitials(displayName) || '?'}
-                        </Avatar>
+                  <PortraitCard key={result.id} topIq={isTopIq}>
+                      <Stack spacing={3} sx={{ p: 3, flexGrow: 1 }}>
+                        <Stack direction="row" spacing={2.5} alignItems="center">
+                          <Avatar
+                            variant="rounded"
+                            src={result.avatar_url || undefined}
+                            alt={displayName}
+                            imgProps={{
+                              referrerPolicy: 'no-referrer',
+                              style: { objectFit: 'cover' },
+                            }}
+                            sx={{
+                              width: 72,
+                              height: 72,
+                              flexShrink: 0,
+                              borderRadius: 1.5,
+                              fontSize: 24,
+                              fontWeight: 700,
+                              bgcolor: alpha(theme.palette.primary.main, 0.1),
+                              color: 'primary.main',
+                              border: `2px solid ${alpha(theme.palette.common.white, 0.9)}`,
+                              boxShadow: `0 8px 20px ${alpha(theme.palette.grey[900], 0.1)}`,
+                            }}
+                          >
+                            {getInitials(displayName) || '?'}
+                          </Avatar>
 
-                        <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-                          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                            <Typography variant="h6" noWrap>
-                              {displayName}
-                            </Typography>
-                            {index === 0 && (
-                              <Chip
-                                label="Latest"
-                                size="small"
-                                color="primary"
-                                sx={{ fontWeight: 700 }}
-                              />
+                          <Stack spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
+                            <Stack direction="row" spacing={1.25} alignItems="center" flexWrap="wrap">
+                              <Typography variant="subtitle1" sx={{ fontWeight: 700 }} noWrap>
+                                {displayName}
+                              </Typography>
+                              {isTopIq && (
+                                <Chip
+                                  icon={<Iconify icon={trophy} width={12} />}
+                                  label="Top IQ"
+                                  size="small"
+                                  sx={{
+                                    height: 22,
+                                    fontWeight: 700,
+                                    bgcolor: alpha(theme.palette.primary.main, 0.12),
+                                    color: 'primary.main',
+                                    '& .MuiChip-icon': { color: 'primary.main' },
+                                  }}
+                                />
+                              )}
+                            </Stack>
+                            {result.email && (
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color: 'text.secondary',
+                                  display: 'block',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {result.email}
+                              </Typography>
                             )}
                           </Stack>
 
-                          {result.email && result.full_name && (
-                            <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                              {result.email}
+                          <IqBadge highlighted={isTopIq}>
+                            <Typography
+                              variant="caption"
+                              sx={{ color: 'text.secondary', fontWeight: 700, lineHeight: 1.2 }}
+                            >
+                              IQ
                             </Typography>
-                          )}
+                            <Typography variant="h5" sx={{ lineHeight: 1, color: 'primary.main' }}>
+                              {result.estimated_iq}
+                            </Typography>
+                          </IqBadge>
+                        </Stack>
 
-                          <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ pt: 0.5 }}>
-                            <Chip
-                              label={getAuthLabel(result.auth_provider)}
-                              size="small"
-                              variant="outlined"
-                            />
-                            <Chip
-                              label={completedAt.relative}
-                              size="small"
-                              sx={{ color: 'text.secondary' }}
-                            />
+                        <Box
+                          sx={{
+                            borderTop: `1px dashed ${alpha(theme.palette.grey[500], 0.24)}`,
+                            pt: 2.5,
+                          }}
+                        >
+                          <Stack spacing={2.5}>
+                            <Stack direction="row" spacing={3}>
+                              <CardStat
+                                icon={chartLine}
+                                label="Score"
+                                value={`${result.score}/${result.total_questions}`}
+                              />
+                              <CardStat
+                                icon={activity}
+                                label="Accuracy"
+                                value={`${accuracy}%`}
+                                iconColor="primary.main"
+                              />
+                            </Stack>
+
+                            <Stack direction="row" spacing={3}>
+                              <CardStat
+                                icon={certificate}
+                                label="Range"
+                                value={shortenIqLabel(result.iq_label)}
+                              />
+                              <CardStat
+                                icon={timeIcon}
+                                label="Completed"
+                                value={completedAt.short}
+                              />
+                            </Stack>
                           </Stack>
-                        </Stack>
-                      </Stack>
-
-                      <Stack
-                        direction={{ xs: 'row', md: 'row' }}
-                        spacing={2}
-                        alignItems="center"
-                        sx={{ width: { xs: '100%', md: 'auto' } }}
-                      >
-                        <Box
-                          sx={{
-                            minWidth: 88,
-                            textAlign: 'center',
-                            px: 2,
-                            py: 1.5,
-                            borderRadius: 2,
-                            bgcolor: alpha(theme.palette.grey[500], 0.06),
-                          }}
-                        >
-                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                            Score
-                          </Typography>
-                          <Typography variant="h5">
-                            {result.score}/{result.total_questions}
-                          </Typography>
                         </Box>
 
-                        <Box
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          alignItems="center"
                           sx={{
-                            minWidth: 88,
-                            textAlign: 'center',
-                            px: 2,
-                            py: 1.5,
-                            borderRadius: 2,
-                            bgcolor: alpha(theme.palette.primary.main, 0.08),
+                            mt: 'auto',
+                            pt: 1.5,
+                            color: 'text.secondary',
                           }}
                         >
-                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                            Est. IQ
-                          </Typography>
-                          <Typography variant="h5" sx={{ color: 'primary.main' }}>
-                            {result.estimated_iq}
-                          </Typography>
-                        </Box>
-
-                        <Stack spacing={0.5} sx={{ minWidth: { md: 180 } }}>
-                          <Chip
-                            label={`${accuracy}% accuracy`}
-                            size="small"
-                            color={getScoreColor(result.score, result.total_questions)}
-                            sx={{ alignSelf: 'flex-start', fontWeight: 700 }}
-                          />
-                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                            {result.iq_label}
-                          </Typography>
-                          <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-                            {completedAt.absolute}
+                          {authIcon ? (
+                            <Iconify icon={authIcon} width={14} sx={{ flexShrink: 0 }} />
+                          ) : (
+                            <Box
+                              sx={{
+                                width: 8,
+                                height: 8,
+                                borderRadius: '50%',
+                                bgcolor: alpha(theme.palette.grey[500], 0.4),
+                                flexShrink: 0,
+                              }}
+                            />
+                          )}
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {getAuthLabel(result.auth_provider)} · {completedAt.relative}
                           </Typography>
                         </Stack>
                       </Stack>
-                    </Stack>
-                  </ResultCard>
+                    </PortraitCard>
                 );
               })}
-            </Stack>
+            </CardGrid>
           </Stack>
         )}
+
+        <IqCommentsSection
+          initialComments={initialComments}
+          initialError={initialCommentsError}
+        />
       </Stack>
     </Container>
   );
